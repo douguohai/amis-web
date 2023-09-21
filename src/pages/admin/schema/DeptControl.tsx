@@ -1,65 +1,24 @@
-import React, { useState } from "react";
-import MonacoEditor from "react-monaco-editor";
-import * as monaco from "monaco-editor";
-import schema from "amis/schema.json";
-import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
+import schema2component from "@/utils/schema2component";
+import "./CustomRenderer";
 
-export default ({ code, onCodeChange , context}) => {
-    const [theme, setTheme] = useState("vs-light");
-    let key = window.location.pathname;
-
-    // console.log("dispatchEvent", dispatchEvent);
-    
-    if(code==null || code== '') {
-        code = window.localStorage.getItem(key);
+const schema = {
+    "type": "page",
+    "body": {
+        "type": "input-tree",
+        "name": "tree",
+        "label": "部门信息",
+        "creatable": true,
+        "removable": true,
+        "editable": true,
+        "multiple": false,
+        "rootCreatable": false,
+        "heightAuto":true,
+        "itemHeight":40,
+        "source": "http://127.0.0.1:9999/sys/dept/list",
+        "addApi": "http://127.0.0.1:9999/sys/dept/add",
+        "deleteApi": "http://127.0.0.1:9999/sys/dept/del?editId=${value}",
+        "editApi": "http://127.0.0.1:9999/sys/dept/edit",
     }
-    const onEditorReady = (editor) => {
-        console.log("onEditorReady", editor);
-        monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-            validate: true,
-            schemas: [
-                {
-                    uri: "",
-                    fileMatch: ["*"],
-                    schema: schema
-                }
-            ]
-        });
-    };
+}
 
-    const options:monacoEditor.editor.IStandaloneEditorConstructionOptions = {
-        minimap: {
-            enabled: true, // 是否启用预览图
-        },
-        foldingStrategy: "indentation",
-        language: "json",
-        folding: true,
-        automaticLayout: true,
-        quickSuggestions: true,
-        acceptSuggestionOnCommitCharacter: true,
-        acceptSuggestionOnEnter: "on",
-        wordWrap: "on",
-    };
-
-    const changeCode = (e) => {
-        localStorage.setItem(key, e);
-        context.dispatchEvent('change',{value:e});
-        // context.setValue(e);
-        // context.onAction('{}', 'reload');
-        return onCodeChange(e);
-    };
-
-    return (
-        <>
-            <MonacoEditor
-                height={800}
-                language="json"
-                options={options}
-                theme={theme}
-                onChange={(e) => changeCode(e)}
-                value={code}
-                editorDidMount={onEditorReady}
-            />
-        </>
-    );
-};
+export default schema2component(schema);
