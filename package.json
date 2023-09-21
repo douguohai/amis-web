@@ -1,7 +1,7 @@
 {
   "name": "react-amis-admin",
   "version": "1.3.0",
-  "description": "基于 amis 的项目模板",
+  "description": "考试系统",
   "main": "./src/index.tsx",
   "repository": {
     "type": "git",

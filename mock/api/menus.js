@@ -87,6 +87,22 @@ module.exports = () => {
               },
             ],
           },
+          {
+            label: "系统管理",
+            icon: "fa fa-th",
+            children: [
+              {
+                path: "/schemaApi/deptControl",
+                label: "部门信息",
+                icon: "fa fa-th",
+              },
+              {
+                path: "/schemaApi/permissionControl",
+                label: "菜单信息",
+                icon: "fa fa-th",
+              },
+            ],
+          },
         ],
       },
     ],

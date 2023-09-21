@@ -4,6 +4,7 @@ class UserStore {
 
     @observable
     name = "";
+    token = "";
 
     constructor() {
         this.name =  localStorage.getItem('authenticated') || '';
@@ -20,9 +21,11 @@ class UserStore {
     }
 
     @action
-    login(name) {
+    login(name,token) {
         this.name=name;
+        this.token=token;
         localStorage.setItem('authenticated', name);
+        localStorage.setItem('token', token);
     }
 
 

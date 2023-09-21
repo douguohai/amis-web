@@ -13,6 +13,8 @@ import Icon from "@/pages/admin/icon/Simple";
 import Tabs from "@/pages/admin/common/Tabs";
 import SchemaApiDemo from "@/pages/admin/schema/index";
 import SchemaApiDemo1 from "@/pages/admin/schema/demo1";
+import DeptControl from "@/pages/admin/schema/DeptControl";
+import PermissionControl from "@/pages/admin/schema/PermissionControl";
 import Simple2 from "@/pages/admin/dialog/Simple2";
 import Horizontal from "@/pages/admin/horizontal";
 const path2components = [
@@ -63,7 +65,7 @@ const path2components = [
     {
         path: '/dialog/simple',
         component: Simple
-    },    
+    },
     {
         path: '/dialog/simple2',
         component: Simple2
@@ -87,6 +89,14 @@ const path2components = [
     {
         path: '/horizontal',
         component: Horizontal
+    },
+    {
+        path: '/schemaApi/deptControl',
+        component: DeptControl
+    },
+    {
+        path: '/schemaApi/permissionControl',
+        component: PermissionControl
     }
 ]
 
