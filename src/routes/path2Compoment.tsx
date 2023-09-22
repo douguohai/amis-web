@@ -15,6 +15,7 @@ import SchemaApiDemo from "@/pages/admin/schema/index";
 import SchemaApiDemo1 from "@/pages/admin/schema/demo1";
 import DeptControl from "@/pages/admin/schema/DeptControl";
 import PermissionControl from "@/pages/admin/schema/PermissionControl";
+import RoleControl from "@/pages/admin/schema/RoleControl";
 import Simple2 from "@/pages/admin/dialog/Simple2";
 import Horizontal from "@/pages/admin/horizontal";
 const path2components = [
@@ -97,6 +98,10 @@ const path2components = [
     {
         path: '/schemaApi/permissionControl',
         component: PermissionControl
+    },
+    {
+        path: '/schemaApi/roleControl',
+        component: RoleControl
     }
 ]
 

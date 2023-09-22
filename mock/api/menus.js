@@ -101,6 +101,11 @@ module.exports = () => {
                 label: "菜单信息",
                 icon: "fa fa-th",
               },
+              {
+                path: "/schemaApi/roleControl",
+                label: "角色信息",
+                icon: "fa fa-th",
+              },
             ],
           },
         ],
