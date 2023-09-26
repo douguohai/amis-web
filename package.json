@@ -26,7 +26,9 @@
   "license": "Apache License 2.0",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.2.1",
-    "amis": "3.2.0",
+    "@logicflow/core": "^1.2.15",
+    "@logicflow/extension": "^1.2.16",
+    "amis": "^3.2.0",
     "amis-core": "3.2.0",
     "amis-formula": "3.2.0",
     "amis-ui": "3.2.0",

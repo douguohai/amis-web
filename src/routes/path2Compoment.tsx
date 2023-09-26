@@ -18,6 +18,7 @@ import PermissionControl from "@/pages/admin/schema/PermissionControl";
 import RoleControl from "@/pages/admin/schema/RoleControl";
 import Simple2 from "@/pages/admin/dialog/Simple2";
 import Horizontal from "@/pages/admin/horizontal";
+import MagicFlow from "@/pages/admin/flow/magicFlow";
 const path2components = [
     {
         path: '/',
@@ -102,6 +103,10 @@ const path2components = [
     {
         path: '/schemaApi/roleControl',
         component: RoleControl
+    },
+    {
+        path: '/flow/index',
+        component: MagicFlow
     }
 ]
 

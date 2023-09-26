@@ -74,6 +74,10 @@ module.exports = () => {
                 label: "代码编辑器",
                 path: "/form/editor",
               },
+              {
+                label: "流程图",
+                path: "/flow/index",
+              },
             ],
           },
           {
