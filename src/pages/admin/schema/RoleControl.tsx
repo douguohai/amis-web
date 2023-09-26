@@ -3,6 +3,10 @@ import "./CustomRenderer";
 
 const schema = {
     "type": "page",
+    "id": "role_menu_page",
+    "data": {
+        roleId: 0
+    },
     "body": [
         {
             "type": "grid",
@@ -13,6 +17,7 @@ const schema = {
                         {
                             "type": "input-tree",
                             "name": "tree",
+                            "label": "角色管理",
                             "creatable": true,
                             "removable": true,
                             "editable": true,
@@ -29,9 +34,10 @@ const schema = {
                                 "change": {
                                     "actions": [
                                         {
-                                            "actionType": "toast",
-                                            "args": {
-                                                "msg": "${event.data.value|json}"
+                                            "componentId": "role_menu_page",
+                                            "actionType": "reload",
+                                            "data": {
+                                                "roleId": "${event.data.value}"
                                             }
                                         }
                                     ]
@@ -45,22 +51,34 @@ const schema = {
                     "body": [
                         {
                             "type": "input-tree",
-                            "name": "tree2",
+                            "name": "menu-tree",
+                            "label": "菜单管理",
                             "multiple": true,
                             "heightAuto": true,
-                            "joinValues": true,
+                            "joinValues": false,
+                            "extractValue": true,
                             "cascade": true,
                             "itemHeight": 40,
-                            "source": "http://127.0.0.1:9999/sys/menu/list",
+                            "source": "http://127.0.0.1:9999/sys/role/menu/${roleId}",
                             "onEvent": {
                                 "change": {
                                     "actions": [
                                         {
-                                            "actionType": "toast",
+                                            "actionType": "ajax",
                                             "args": {
-                                                "msg": "${event.data.value|json}"
-                                            }
-                                        }
+                                                "api": {
+                                                    "url": "http://127.0.0.1:9999/sys/role/${roleId}/menu",
+                                                    "method": "put",
+                                                    "replaceData": true,
+                                                    "data": {
+                                                        "menus": "${event.data.value}"
+                                                    }
+                                                },
+                                                "options": {
+                                                    "silent": true
+                                                },
+                                            },
+                                        },
                                     ]
                                 }
                             }

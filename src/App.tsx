@@ -10,7 +10,7 @@ import { MainStore } from './stores';
 import copy from 'copy-to-clipboard';
 import RootRoute from './routes';
 import './utils/polyfill';
-import {request} from './utils/requestInterceptor';
+import { request } from './utils/requestInterceptor';
 
 import "moment/dist/locale/zh-cn";
 // css
@@ -20,7 +20,7 @@ import 'amis-ui/lib/themes/cxd.css';
 import 'amis/lib/helper.css';
 import './scss/style.scss';
 
-export default function():JSX.Element {
+export default function (): JSX.Element {
     const store = (window as any).store = MainStore.create({}, {
         fetcher: ({
             url,
@@ -43,8 +43,8 @@ export default function():JSX.Element {
             if (method === 'get' && data) {
                 config.params = data;
             } else if (data && data instanceof FormData) {
-                // config.headers = config.headers || {};
-                // config.headers['Content-Type'] = 'multipart/form-data';
+                config.headers = config.headers || {};
+                config.headers['Content-Type'] = 'multipart/form-data';
             } else if (data
                 && typeof data !== 'string'
                 && !(data instanceof Blob)
@@ -59,10 +59,10 @@ export default function():JSX.Element {
             config.url = url;
             return request(config);
         },
-        isCancel: (e:any) => axios.isCancel(e),
+        isCancel: (e: any) => axios.isCancel(e),
         notify: (type: 'success' | 'error' | 'info', msg: string) => {
             toast[type] ? toast[type](msg,
-                {title:type === 'error' ? '系统错误' : '系统消息', timeout:5000}) : console.warn('[Notify]', type, msg);
+                { title: type === 'error' ? '系统错误' : '系统消息', timeout: 5000 }) : console.warn('[Notify]', type, msg);
             console.log('[notify]', type, msg);
         },
         alert,
