@@ -19,6 +19,7 @@ import RoleControl from "@/pages/admin/schema/RoleControl";
 import Simple2 from "@/pages/admin/dialog/Simple2";
 import Horizontal from "@/pages/admin/horizontal";
 import MagicFlow from "@/pages/admin/flow/magicFlow";
+import ApproveFlow from "@/pages/admin/approve/index";
 const path2components = [
     {
         path: '/',
@@ -106,7 +107,7 @@ const path2components = [
     },
     {
         path: '/flow/index',
-        component: MagicFlow
+        component: ApproveFlow
     }
 ]
 
