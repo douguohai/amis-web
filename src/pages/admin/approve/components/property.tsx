@@ -3,9 +3,11 @@ import { Form, Select, Input, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { approveUser } from '../config';
 import { IApproveUser } from '../type';
-// import 'antd/dist/antd.css';
+
+
 // @ts-ignore
 export default function PropertyPanel(nodeData, updateproperty, hidePropertyPanel) {
+
   const getApproveList = () => {
     const approveUserOption: JSX.Element[] = []
     approveUser.forEach((item: IApproveUser) => {
@@ -18,12 +20,15 @@ export default function PropertyPanel(nodeData, updateproperty, hidePropertyPane
     </Form.Item>
     return approveSelect;
   }
+
   const getApiUrl = () => {
     const Api = <Form.Item label="API" name="api">
       <Input />
     </Form.Item>
     return Api;
   }
+
+
   const onFormLayoutChange = (value: any, all: any) => {
     approveUser.forEach(item => {
       if (item.value === value.approveType) {
@@ -32,6 +37,9 @@ export default function PropertyPanel(nodeData, updateproperty, hidePropertyPane
     })
     updateproperty(nodeData.id, value,);
   }
+
+  console.log("nodeData", nodeData)
+
   return (
     <div>
       <h2>属性面板</h2>

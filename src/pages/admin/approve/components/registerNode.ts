@@ -9,16 +9,19 @@ import LogicFlow, {
   PolygonNode,
   PolygonNodeModel,
 } from '@logicflow/core';
+
 import GraphModel from "@logicflow/core/types/model/GraphModel";
 import { nodeProperty } from '../type';
 
 export default function RegisteNode(lf: LogicFlow) {
+
+  // 申请节点
   class ApplyNodeModel extends CircleNodeModel {
     getConnectedTargetRules(): ConnectRule[] {
       const rules = super.getConnectedTargetRules();
       const geteWayOnlyAsTarget = {
         message: '开始节点只能连出，不能连入！',
-        validate: (source:BaseNodeModel, target:BaseNodeModel) => {
+        validate: (source: BaseNodeModel, target: BaseNodeModel) => {
           let isValid = true;
           if (target) {
             isValid = false;
@@ -37,6 +40,8 @@ export default function RegisteNode(lf: LogicFlow) {
     model: ApplyNodeModel,
   })
 
+
+  //审批节点
   class ApproverNode extends RectNode {
     static extendKey = 'UserTaskNode';
     getLabelShape() {
@@ -92,14 +97,9 @@ export default function RegisteNode(lf: LogicFlow) {
       );
     }
   }
-  class ApproverModel extends RectNodeModel { 
+  class ApproverModel extends RectNodeModel {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
-      this.properties = {
-        labelColor: '#000000',
-        approveTypeLabel: '',
-        approveType: ''
-      }
     }
   }
 
@@ -109,10 +109,12 @@ export default function RegisteNode(lf: LogicFlow) {
     model: ApproverModel,
   })
 
-  class JugementModel extends PolygonNodeModel { 
+
+  // 条件节点
+  class JugementModel extends PolygonNodeModel {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
-      this.points= [
+      this.points = [
         [35, 0],
         [70, 35],
         [35, 70],
@@ -129,12 +131,36 @@ export default function RegisteNode(lf: LogicFlow) {
     model: JugementModel,
   });
 
+
+  // 并行条件节点
+  class ParallelGatewayModel extends PolygonNodeModel {
+    constructor(data: any, graphModel: GraphModel) {
+      super(data, graphModel);
+      this.points = [
+        [35, 0],
+        [70, 35],
+        [35, 70],
+        [35, 35],
+        [0, 35],
+      ];
+      this.properties = {
+        api: '',
+      }
+    }
+  }
+  lf.register({
+    type: 'parallelGateway',
+    view: PolygonNode,
+    model: ParallelGatewayModel,
+  });
+
+  //结束节点
   class FinshNodeModel extends CircleNodeModel {
     getConnectedSourceRules(): ConnectRule[] {
       const rules = super.getConnectedSourceRules();
       const geteWayOnlyAsTarget = {
         message: '结束节点只能连入，不能连出！',
-        validate: (source:BaseNodeModel) => {
+        validate: (source: BaseNodeModel) => {
           let isValid = true;
           if (source) {
             isValid = false;

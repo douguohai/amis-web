@@ -1,6 +1,7 @@
 export type HtmlNodeConfig = {
   type: string,
   label: string,
+  property?: {}
   style: {
     width: string,
     height: string,
@@ -9,10 +10,12 @@ export type HtmlNodeConfig = {
     transform?: string,
   }
 }
+
 export type IApproveUser = {
   label: string,
   value: string,
 }
+
 export type nodeProperty = {
   labelColor: string,
   approveTypeLabel: string,

@@ -13,7 +13,28 @@ export const approveNodes = [
       time: '',
       startTime: '',
       endTime: '',
-
+      netx: '',
+    }
+  },
+  {
+    type: 'jugement',
+    label: '条件',
+    style: {
+      width: '30px',
+      height: '30px',
+      border: '2px solid #6495ED',
+      transform: 'rotate(45deg)',
+    }
+  },
+  {
+    type: 'parallelGateway',
+    label: '并行',
+    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAEFVwZaAAAABGdBTUEAALGPC/xhBQAAAqlJREFUOBF9VM9rE0EUfrMJNUKLihGbpLGtaCOIR8VjQMGDePCgCCIiCNqzCAp2MyYUCXhUtF5E0D+g1t48qAd7CCLqQUQKEWkStcEfVGlLdp/fm3aW2QQdyLzf33zz5m2IsAZ9XhDpyaaIZkTS4ASzK41TFao88GuJ3hsr2pAbipHxuSYyKRugagICGANkfFnNh3HeE2N0b3nN2cgnpcictw5veJIzxmDamSlxxQZicq/mflxhbaH8BLRbuRwNtZp0JAhoplVRUdzmCe/vO27wFuuA3S5qXruGdboy5/PRGFsbFGKo/haRtQHIrM83bVeTrOgNhZReWaYGnE4aUQgTJNvijJFF4jQ8BxJE5xfKatZWmZcTQ+BVgh7s8SgPlCkcec4mGTmieTP4xd7PcpIEg1TX6gdeLW8rTVMVLVvb7ctXoH0Cydl2QOPJBG21STE5OsnbweVYzAnD3A7PVILuY0yiiyDwSm2g441r6rMSgp6iK42yqroI2QoXeJVeA+YeZSa47gZdXaZWQKTrG93rukk/l2Al6Kzh5AZEl7dDQy+JjgFahQjRopSxPbrbvK7GRe9ePWBo1wcU7sYrFZtavXALwGw/7Dnc50urrHJuTPSoO2IMV3gUQGNg87IbSOIY9BpiT9HV7FCZ94nPXb3MSnwHn/FFFE1vG6DTby+r31KAkUktB3Qf6ikUPWxW1BkXSPQeMHHiW0+HAd2GelJsZz1OJegCxqzl+CLVHa/IibuHeJ1HAKzhuDR+ymNaRFM+4jU6UWKXorRmbyqkq/D76FffevwdCp+jN3UAN/C9JRVTDuOxC/oh+EdMnqIOrlYteKSfadVRGLJFJPSB/ti/6K8f0CNymg/iH2gO/f0DwE0yjAFO6l8JaR5j0VPwPwfaYHqOqrCI319WzwhwzNW/aQAAAABJRU5ErkJggg==',
+    style: {
+      width: '30px',
+      height: '30px',
+      border: '2px solid #6495ED',
+      // transform: 'rotate(45deg)',
     }
   },
   {
@@ -24,11 +45,16 @@ export const approveNodes = [
       height: '40px',
       borderRadius: '4px',
       border: '2px solid #3CB371',
+    },
+    property: {
+      labelColor: '#000000',
+      approveTypeLabel: '',
+      approveType: ''
     }
   },
   {
     type: 'jugement',
-    label: '判断',
+    label: '任务',
     style: {
       width: '30px',
       height: '30px',
@@ -99,7 +125,9 @@ export const data = {
       "x": 210,
       "y": 210,
       "text": { "x": 210, "y": 210, "value": "申请" },
-      "properties": {}
+      "properties": {
+        "next": "1",
+      }
     },
     {
       "id": "64179bd7-c60e-433c-8df7-97c8e98f855d",
