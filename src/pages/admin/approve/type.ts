@@ -1,17 +1,9 @@
-export type HtmlNodeConfig = {
-  type: string,
+export type IApproveUser = {
   label: string,
-  property?: {}
-  style: {
-    width: string,
-    height: string,
-    borderRadius?: string,
-    border: string,
-    transform?: string,
-  }
+  value: string,
 }
 
-export type IApproveUser = {
+export type WorkNodeType = {
   label: string,
   value: string,
 }
