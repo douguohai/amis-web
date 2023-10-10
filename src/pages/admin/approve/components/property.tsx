@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { approveUser, workNodeType } from '../config';
 import { IApproveUser, WorkNodeType } from '../type';
 import { Descriptions, Drawer, Select, Form, Input } from 'antd';
@@ -6,8 +6,7 @@ const { Option } = Select;
 
 
 // @ts-ignore
-export default function PropertyPanel(nodeData, updateProperty, onClose) {
-
+export default function PropertyPanel({ nodeData, updateProperty, onClose, open }) {
 
   const getApproveList = () => {
     const approveUserOption: JSX.Element[] = []
@@ -31,6 +30,7 @@ export default function PropertyPanel(nodeData, updateProperty, onClose) {
             {approveUserOption}
           </Select>
         </Form.Item>
+        {JSON.stringify(nodeData.properties)}
       </div>
 
     return approveSelect;
@@ -57,7 +57,6 @@ export default function PropertyPanel(nodeData, updateProperty, onClose) {
   }
 
   const getStart = () => {
-
     const result = <Descriptions column={1}>
       <Descriptions.Item label="解释">
         引擎开始节点，无任何业务意义，标识逻辑开始
@@ -92,8 +91,13 @@ export default function PropertyPanel(nodeData, updateProperty, onClose) {
             options={workNodeType}
             defaultValue={nodeData.properties.action}
             onChange={(value) => {
-              nodeData.properties.action = value
-              updateProperty(nodeData.id, nodeData);
+              updateProperty(nodeData.id, {
+                ...nodeData,
+                properties: {
+                  ...nodeData.properties,
+                  action: value
+                }
+              });
             }}
           />
         </Form.Item>
@@ -101,27 +105,76 @@ export default function PropertyPanel(nodeData, updateProperty, onClose) {
     return result;
   }
 
+  const getParallelGatewayNode = () => {
+
+    if (nodeData.properties.action == "parallelGateway-start") {
+      return (
+        <div>
+          <Descriptions column={1}>
+            <Descriptions.Item label="解释">
+              并行网关开始节点，和结束节点必须成对出现
+            </Descriptions.Item>
+            <Descriptions.Item label="唯一标识">{nodeData.id}</Descriptions.Item>
+            <Descriptions.Item label="携带参数">{JSON.stringify(nodeData.properties)}</Descriptions.Item>
+            <Descriptions.Item label="下级节点">{nodeData.properties.action}</Descriptions.Item>
+            <Descriptions.Item label="下级节点">{nodeData.properties.next}</Descriptions.Item>
+            <Descriptions.Item label="下级类型">{nodeData.properties.nextType}</Descriptions.Item>
+          </Descriptions>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <Descriptions column={1}>
+            <Descriptions.Item label="解释">
+              并行网关结束节点，和开始节点必须成对出现
+            </Descriptions.Item>
+            <Descriptions.Item label="唯一标识">{nodeData.id}</Descriptions.Item>
+            <Descriptions.Item label="携带参数">{JSON.stringify(nodeData.properties)}</Descriptions.Item>
+            <Descriptions.Item label="下级节点">{nodeData.properties.action}</Descriptions.Item>
+            <Descriptions.Item label="下级节点">{nodeData.properties.next}</Descriptions.Item>
+            <Descriptions.Item label="下级类型">{nodeData.properties.nextType}</Descriptions.Item>
+          </Descriptions>
+        </div>
+      )
+    }
+  }
+
+  const getFinshNode = () => {
+    const result = <Descriptions column={1}>
+      <Descriptions.Item label="解释">
+        引擎结束节点，无任何业务意义，标识逻辑结束
+      </Descriptions.Item>
+      <Descriptions.Item label="唯一标识">{nodeData.id}</Descriptions.Item>
+      <Descriptions.Item label="节点类型">{nodeData.properties.type}(结束节点)</Descriptions.Item>
+      <Descriptions.Item label="携带参数">{JSON.stringify(nodeData.properties)}</Descriptions.Item>
+    </Descriptions>;
+
+    return result;
+  }
+
   console.log("nodeData", nodeData)
 
   return (
-    nodeData == undefined ? '' :
+    nodeData == "" ? <div /> :
       <Drawer
         title="属性面板"
+        key="123"
         placement={'right'}
         width={620}
         onClose={onClose}
         zIndex={100000}
-        open={true}
+        open={open}
       >
         <Form
-          key={nodeData.id}
           layout="horizontal"
-          initialValues={nodeData.properties}
         >
-          {nodeData.properties.type === "start" ? getStart() : ''}
+          {nodeData.properties?.type === "start" ? getStart() : ''}
           {nodeData.type === "taskNode" ? getTaskNode() : ''}
+          {nodeData.type === "parallelGateway" ? getParallelGatewayNode() : ''}
           {nodeData.type === "approver" ? getApproveList() : ''}
           {nodeData.type === "jugement" ? getApiUrl() : ''}
+          {nodeData.type === "finsh" ? getFinshNode() : ''}
         </Form>
       </Drawer>
   )

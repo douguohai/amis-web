@@ -29,7 +29,7 @@ const config = {
 export default function ApproveExample() {
 
   const [lf, setLf] = useState({} as LogicFlow);
-  const [nodeData, setNodeData] = useState();
+  const [nodeData, setNodeData] = useState("");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function ApproveExample() {
         label: '并行开始',
         icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAXBJREFUOE+1lb1KA0EUhc/dVFbqLsReMgk2Fr6BIBaCTTpfwGKWpBG0NHaCYKFmQHyBNOkEERvfQGyEZNfUQsiuglhokiuz+dH8sQo7U83MPXxzZu6dGYKBRgaYmApdVP4uwDuxCzJXQjd7Oa6bCrXLXgjCQiwUeAukmNBNQB3lHTNwANAHuHMyE0zWPoA5AKeBFHu/dSPQeVVbTsF61gJmuKEr1Cyoo/wCg890PMUkmm7GH2hHoLaqVwHKE/DQkmItbvu28h8BXiXguiXF9gTUUbUNhnWnA90O1l8L4j4WWvY2QbiNdgbaCmXmRveHTm3lPQFYAbgSyGx85vsr2sqvApwHUA+kyA2hjvJcBi70xGcb6feiaMa5HMTTV42l9lfnpQejYktmziOntvI4EnH3KHBzpb8CBzq7XCuBrEM9DqSgCGrEad9tsmfac2sg+z23Cdephhq5Uf2kJXv3f0ok4VdKg428p/8t/nG9ke/kG4C0wRY4obbdAAAAAElFTkSuQmCC',
         properties: {
-          "kk": "parallelGateway-start"
+          "action": "parallelGateway-start"
         }
       },
       {
@@ -80,7 +80,7 @@ export default function ApproveExample() {
         label: '并行结束',
         icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAXVJREFUOE+1lb1KxEAUhc/1Z4LYWGm1syiu2TQWvoEgFoLNdr6AzaKNoKVrJwgWKoJvYLOdIGLjG4iNSRYVErdYsBAbIRPNlQwb2V+ikKTK5J75cu7cuTOEHB7KgYmBUFuObxJjI+2HTLi0/PCiVzcQ6kjxDmAqDQrgo+yrPl0f1JHiEMAegE8GjoaBCdgFMMHEx5YX7nTquqCuNOYY/BwLiLlqvobnw6ANaWxF4JM4PhZRab4ZPCXaLqhdEHUiVBi4t3y1lJa+UxQPYCwScGX6ar0P6kpjhcG3cYCjaNlqft2lQe2CsUrENzozojXTC671ezLRkeIRgKUr6qnUyifz3IKoM6ECQqPsKfMX6haNKjOfxR9GlZoutfCW5jKJv8xOzqjvsBWPR0DbC35wqp06UrBOGziwfFX7KzDR2VLUCNiPx2VfkYbm4rTtNts11W7zqH4Mznyftt1m31Httc229zsaIdtTSq9tHufpfzd/rz6X6+QHcg3KFkZDYP8AAAAASUVORK5CYII=',
         properties: {
-          "kk": "parallelGateway-end"
+          "action": "parallelGateway-end"
         }
       },
       {
@@ -95,6 +95,9 @@ export default function ApproveExample() {
 
   const initEvent = (lf: LogicFlow) => {
     lf.on('element:click', ({ data }) => {
+      if (data.type == "polyline") {
+        return
+      }
       setNodeData(data);
       setOpen(true)
       console.log(open);
@@ -108,18 +111,26 @@ export default function ApproveExample() {
       //线连接成功触发该事件
       console.log("线连接成功触发该事件", data);
       console.log("线连接成功触发该事件", data.edgeModel.sourceNodeId, data.edgeModel.targetNodeId);
-      const node = lf.graphModel.nodesMap[data.edgeModel.sourceNodeId];
-      console.log(node.model.getProperties())
-      var pp = {
-        dgh2: "zhangsan"
-      }
-
-      node.model.setProperties(Object.assign(node.model.properties, pp));
-      console.log(node.model.getProperties())
+      const sourceId = data.edgeModel.sourceNodeId;
+      const targetId = data.edgeModel.targetNodeId;
+      const sourceNode = lf.graphModel.nodesMap[sourceId];
+      const targetNode = lf.graphModel.nodesMap[targetId];
+      sourceNode.model.setProperties(Object.assign(sourceNode.model.properties, {
+        next: targetId,
+        nextType: targetNode.model.getProperties().type,
+      }));
+      console.log(targetNode.model.getProperties())
     });
     lf.on('edge:delete', (data: any) => {
       //线连接成功触发该事件
-      console.log("线被删除了", data);
+      console.log("线被删除了", data, data.data.sourceNodeId);
+      const sourceId = data.data.sourceNodeId;
+      const sourceNode = lf.graphModel.nodesMap[sourceId];
+      sourceNode.model.setProperties(Object.assign(sourceNode.model.properties, {
+        next: '',
+        nextType: '',
+      }));
+      console.log(sourceNode.model.getProperties())
     });
 
     lf.on('history:change', (data: any) => {
@@ -137,21 +148,23 @@ export default function ApproveExample() {
     const edge = lf.graphModel.edgesMap[id];
     if (node) {
       node.model.setProperties(Object.assign(node.model.properties, data.properties));
-      setNodeData(data);
     } else if (edge) {
       edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
     }
+    console.log("11111-1", nodeData, data)
+    setNodeData(data);
+    console.log("11111-2", nodeData, data)
   }
 
   const onClose = () => {
-    setNodeData(undefined);
+    setNodeData("");
     setOpen(false);
   };
 
   return (
     <div className="approve-example-container">
       <div id="graph" className="viewport" />
-      {PropertyPanel(nodeData, updateProperty, onClose)}
+      <PropertyPanel updateProperty={updateProperty} onClose={onClose} nodeData={nodeData} open={open} />
     </div>
   )
 }

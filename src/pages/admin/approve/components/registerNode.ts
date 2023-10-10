@@ -22,7 +22,8 @@ export default function RegisteNode(lf: LogicFlow) {
       super(data, graphModel);
       console.log(data)
       this.properties = {
-        netx: '',
+        next: '',
+        nextType: '',
         type: 'start',
       }
     }
@@ -143,6 +144,7 @@ export default function RegisteNode(lf: LogicFlow) {
       ];
       this.properties = {
         api: '',
+        type: 'jugement',
       }
     }
   }
@@ -164,7 +166,7 @@ export default function RegisteNode(lf: LogicFlow) {
       const style = model.getNodeStyle();
 
       const properties = model.properties;
-      if (properties.kk == "parallelGateway-end") {
+      if (properties.action == "parallelGateway-end") {
         style.stroke = "red";
       } else {
         style.stroke = "rgb(24, 125, 255)";
@@ -213,6 +215,14 @@ export default function RegisteNode(lf: LogicFlow) {
 
   //结束节点
   class FinshNodeModel extends CircleNodeModel {
+
+    constructor(data: any, graphModel: GraphModel) {
+      super(data, graphModel);
+      this.properties = {
+        type: 'finsh',
+      }
+    }
+
     getConnectedSourceRules(): ConnectRule[] {
       const rules = super.getConnectedSourceRules();
       const geteWayOnlyAsTarget = {
@@ -292,7 +302,9 @@ export default function RegisteNode(lf: LogicFlow) {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
       this.properties = {
-        disabled: true
+        disabled: true,
+        type: 'taskNode',
+        action: 'webhook',
       }
     }
 
