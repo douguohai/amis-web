@@ -206,9 +206,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <Descriptions.Item label="发起点标识">{nodeData.sourceNodeId}</Descriptions.Item>
           <Descriptions.Item label="目的地标识">{nodeData.targetNodeId}</Descriptions.Item>
         </Descriptions>
-        <Form.Item name="desc2" label="文字描述" >
+        <Form.Item name="desc" label="文字描述" >
           <Input
-            defaultValue={nodeData.text?.value}
+            defaultValue={nodeData.text?.value == undefined ? "" : nodeData.text?.value}
             onBlur={(e) => {
               console.log(nodeData)
               updateProperty(nodeData.id, {
@@ -218,6 +218,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                   value: e.target.value
                 }
               });
+              form.resetFields(['desc'])
             }}
           />
         </Form.Item>
@@ -234,6 +235,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
   return (
     nodeData == "" ? <div /> :
       <Drawer
+        destroyOnClose={true}
         title="属性面板"
         placement={'right'}
         width={620}
