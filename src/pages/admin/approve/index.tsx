@@ -57,12 +57,18 @@ export default function ApproveExample() {
         type: 'taskNode',
         text: '任务节点',
         label: '任务节点',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAwpJREFUOE+1lU9sVFUYxc+5rUsC87oxEZOqvVPQXSES44aGhTtMrEUSXNQg0HmvYIAQEw0RI66MEJX3prEaS4KJtmCiOxekuGCBMe5EO7cqATRu5k2N2/Ydc1/73sxoS3HhbCZz//zuvd855xvif/hwI2YQL7wA6rNinYSoFdnkXvv+BQ0m3eNcgm1O2C/9xiBxJwTUtIxD7MFxkmlaG3jJz/VdaOxSL/9Kx+3NzkO6oB6IDDMArMjThB6EcBzC5TSyo5XYxSRCkNOQrgN4H8AvMNjXCS6hJVBqifgK4ikY3IHwtTHmanP8satbPnC72csnKT0HYBeAcwD7AQ12gkto/hTDOQD1NLQnPWDxqL22Xu221H/sX6xtv9UXN8ZEJsw03Jyo3vDru5+fuJcBTGVcesRvKIBB4kah7AnQ/JCGdrYY33zBDfUYXgH0dhraj4rxbmh94RNJ/a3QDreBjZ8ADrZvrPk0rG4rflcSNwfhZiuyURc0iN1BkjsFjXdaJt8AwEgXm1F1upIsHCb0qoDbxcGV2IUkYpKvCNlvaa16Jb9pkDgJXhzcVYZZX8tK3R2gcAnK3kyjwTPlzVd9K+LFVs1+6mtvjA6D3AGgmoaWJTRbxnCnMEE8fwY0b/hF/xTLv4DKvuk8LIf3YK4LCqAh4HdjzFlvn1wcYEbgkVY48GGXaMi9vM+LltvMYBTEVgJ729B6Y4QwD0l6j9DpZlg9u1KWXKQHIL6WRgOfF7cB2mKVNQUnJX2XRvbjrqetJmYoDe1TneoS2C3gWvHd6Y68FOStIrrr+JSvL2ca+XPCfl+CvWhZZmWM8+IU4z4ARr2/Aji0pk+LRFEKvX2KxKybqNXEBYl7F0BtzUS1mwnnAfk0nQBwQ+QXWtK33hl9kz/vybJsD4hnkOFhUO9Q2Auysmb2c2HaXepRAMdAPg1pTELiExPEbhbE8yDOC/yD0lsA3LpdqrRM3k+1qWgOwUp0Ay3jPHswxZWGc26ln7pn1Qt3z366Vv0Ky5Rz4n5vr//U+Tf6e7mf+b8B0vqbJTbXhqoAAAAASUVORK5CYII=',
+      },
+      {
+        type: 'approver',
+        text: '审批节点',
+        label: '审批节点',
         icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAEFVwZaAAAABGdBTUEAALGPC/xhBQAAAqlJREFUOBF9VM9rE0EUfrMJNUKLihGbpLGtaCOIR8VjQMGDePCgCCIiCNqzCAp2MyYUCXhUtF5E0D+g1t48qAd7CCLqQUQKEWkStcEfVGlLdp/fm3aW2QQdyLzf33zz5m2IsAZ9XhDpyaaIZkTS4ASzK41TFao88GuJ3hsr2pAbipHxuSYyKRugagICGANkfFnNh3HeE2N0b3nN2cgnpcictw5veJIzxmDamSlxxQZicq/mflxhbaH8BLRbuRwNtZp0JAhoplVRUdzmCe/vO27wFuuA3S5qXruGdboy5/PRGFsbFGKo/haRtQHIrM83bVeTrOgNhZReWaYGnE4aUQgTJNvijJFF4jQ8BxJE5xfKatZWmZcTQ+BVgh7s8SgPlCkcec4mGTmieTP4xd7PcpIEg1TX6gdeLW8rTVMVLVvb7ctXoH0Cydl2QOPJBG21STE5OsnbweVYzAnD3A7PVILuY0yiiyDwSm2g441r6rMSgp6iK42yqroI2QoXeJVeA+YeZSa47gZdXaZWQKTrG93rukk/l2Al6Kzh5AZEl7dDQy+JjgFahQjRopSxPbrbvK7GRe9ePWBo1wcU7sYrFZtavXALwGw/7Dnc50urrHJuTPSoO2IMV3gUQGNg87IbSOIY9BpiT9HV7FCZ94nPXb3MSnwHn/FFFE1vG6DTby+r31KAkUktB3Qf6ikUPWxW1BkXSPQeMHHiW0+HAd2GelJsZz1OJegCxqzl+CLVHa/IibuHeJ1HAKzhuDR+ymNaRFM+4jU6UWKXorRmbyqkq/D76FffevwdCp+jN3UAN/C9JRVTDuOxC/oh+EdMnqIOrlYteKSfadVRGLJFJPSB/ti/6K8f0CNymg/iH2gO/f0DwE0yjAFO6l8JaR5j0VPwPwfaYHqOqrCI319WzwhwzNW/aQAAAABJRU5ErkJggg==',
       },
       {
-        type: 'jugement',
-        label: '条件判断',
-        text: '条件',
+        type: 'conditionGateWay',
+        label: '条件网关',
+        text: '条件网关',
         icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAAHeEJUAAAAABGdBTUEAALGPC/xhBQAAAvVJREFUOBGNVEFrE0EU/mY3bQoiFlOkaUJrQUQoWMGePLX24EH0IIoHKQiCV0G8iE1covgLiqA/QTzVm1JPogc9tIJYFaQtlhQxqYjSpunu+L7JvmUTU3AgmTfvffPNN++9WSA1DO182f6xwILzD5btfAoQmwL5KJEwiQyVbSVZ0IgRyV6PTpIJ81E5ZvqfHQR0HUOBHW4L5Et2kQ6Zf7iAOhTFAA8s0pEP7AXO1uAA52SbqGk6h/6J45LaLhO64ByfcUzM39V7ZiAdS2yCePPEIQYvTUHqM/n7dgQNfBKWPjpF4ISk8q3J4nB11qw6X8l+FsF3EhlkEMfrjIer3wJTLwS2aCNcj4DbGxXTw00JmAuO+Ni6bBxVUCvS5d9aa04+so4pHW5jLTywuXAL7jJ+D06sl82Sgl2JuVBQn498zkc2bGKxULHjCnSMadBKYDYYHAtsby1EQ5lNGrQd4Y3v4Zo0XdGEmDno46yCM9Tk+RiJmUYHS/aXHPNTcjxcbTFna000PFJHIVZ5lFRqRpJWk9/+QtlOUYJj9HG5pVFEU7zqIYDVsw2s+AJaD8wTd2umgSCCyUxgGsS1Y6TBwXQQTFuZaHcd8gAGioE90hlsY+wMcs30RduYtxanjMGal8H5dMW67dmT1JFtYUEe8LiQLRsPZ6IIc7A4J5tqco3T0pnv/4u0kyzrYUq7gASuEyI8VXKvB9Odytv6jS/PNaZBln0nioJG/AVQRZvApOdhjj3Jt8QC8Im09SafwdBdvIpztpxWxpeKCC+EsFdS8DCyuCn2munFpL7ctHKp+Xc5cMybeIyMAN33SPL3ZR9QV1XVwLyzHm6Iv0/yeUuUb7PPlZC4D4HZkeu6dpF4v9j9MreGtMbxMMRLIcjJic9yHi7WQ3yVKzZVWUr5UrViJvn1FfUlwe/KYVfYyWRLSGNu16hR01U9IacajXPei0wx/5BqgInvJN+MMNtNme7ReU9SBbgntovn0kKHpFg7UogZvaZiOue/q1SBo9ktHzQAAAAASUVORK5CYII=',
       },
       {
@@ -95,9 +101,6 @@ export default function ApproveExample() {
 
   const initEvent = (lf: LogicFlow) => {
     lf.on('element:click', ({ data }) => {
-      if (data.type == "polyline") {
-        return
-      }
       setNodeData(data);
       setOpen(true)
       console.log(open);
@@ -119,7 +122,9 @@ export default function ApproveExample() {
         next: targetId,
         nextType: targetNode.model.getProperties().type,
       }));
-      console.log(targetNode.model.getProperties())
+      targetNode.model.setProperties(Object.assign(targetNode.model.properties, {
+        pre: sourceId,
+      }));
     });
     lf.on('edge:delete', (data: any) => {
       //线连接成功触发该事件
@@ -148,12 +153,17 @@ export default function ApproveExample() {
     const edge = lf.graphModel.edgesMap[id];
     if (node) {
       node.model.setProperties(Object.assign(node.model.properties, data.properties));
+      const nodeModel = lf.getNodeModelById(id);
+      if (nodeModel.type == "taskNode") {
+        console.log(nodeModel)
+        nodeModel.updateText(data.properties.action);
+      }
     } else if (edge) {
+      console.log("edge", data, edge)
+      edge.model.updateText(data.text?.value)
       edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
     }
-    console.log("11111-1", nodeData, data)
     setNodeData(data);
-    console.log("11111-2", nodeData, data)
   }
 
   const onClose = () => {

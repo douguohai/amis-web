@@ -133,7 +133,7 @@ export default function RegisteNode(lf: LogicFlow) {
 
 
   // 条件节点
-  class JugementModel extends PolygonNodeModel {
+  class ConditionGateWayModel extends PolygonNodeModel {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
       this.points = [
@@ -144,16 +144,16 @@ export default function RegisteNode(lf: LogicFlow) {
       ];
       this.properties = {
         api: '',
-        type: 'jugement',
+        type: 'conditionGateWay',
       }
     }
   }
 
 
   lf.register({
-    type: 'jugement',
+    type: 'conditionGateWay',
     view: PolygonNode,
-    model: JugementModel,
+    model: ConditionGateWayModel,
   });
 
 
@@ -302,10 +302,12 @@ export default function RegisteNode(lf: LogicFlow) {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
       this.properties = {
-        disabled: true,
+        red: true,
         type: 'taskNode',
-        action: 'webhook',
+        action: 'apply',
+        webhook: ''
       }
+      this.text.value = "apply"
     }
 
     setAttributes() {
@@ -316,13 +318,13 @@ export default function RegisteNode(lf: LogicFlow) {
       const style = super.getTextStyle();
       style.fontSize = 12;
       const properties = this.properties;
-      style.color = properties.disabled ? "red" : "rgb(24, 125, 255)";
+      style.color = properties.red ? "red" : "rgb(24, 125, 255)";
       return style;
     }
     getNodeStyle() {
       const style = super.getNodeStyle();
       const properties = this.properties;
-      if (properties.disabled) {
+      if (properties.red) {
         style.stroke = "red";
       } else {
         style.stroke = "rgb(24, 125, 255)";

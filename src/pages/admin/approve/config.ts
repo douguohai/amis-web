@@ -28,7 +28,7 @@ export const workNodeType = [
   },
   {
     label: '审批结束',
-    value: 'finished'
+    value: 'finish'
   },
 ]
 
@@ -81,7 +81,7 @@ export const data = {
     },
     {
       "id": "fcb96f10-720e-40e5-8ed0-ebdd0a46f234",
-      "type": "jugement",
+      "type": "conditionGateWay",
       "x": 510,
       "y": 210,
       "text": { "x": 510, "y": 210, "value": "判断报销是否\n大于1000元" },
