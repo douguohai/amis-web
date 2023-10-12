@@ -159,7 +159,6 @@ export default function ApproveExample() {
         nodeModel.updateText(data.properties.action);
       }
     } else if (edge) {
-      console.log("edge", data, edge)
       edge.model.updateText(data.text?.value)
       edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
     }
