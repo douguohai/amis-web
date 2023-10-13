@@ -60,7 +60,6 @@ export default function RegisteNode(lf: LogicFlow) {
 
   //审批节点
   class ApproverNode extends RectNode {
-    static extendKey = 'UserTaskNode';
     getLabelShape() {
       const {
         x,

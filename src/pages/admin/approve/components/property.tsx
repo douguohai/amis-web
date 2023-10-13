@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { approveUser, workNodeType } from '../config';
+import { approveUser } from '../config';
 import { IApproveUser } from '../type';
 import { Drawer, Select, Form, Input, Button, Radio, Space } from 'antd';
 import { MinusCircleOutlined, PlusOutlined, } from '@ant-design/icons';
+
+const { Search } = Input;
 
 
 // @ts-ignore
@@ -10,13 +12,27 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
   const [form] = Form.useForm();
 
+  let actionType = Form.useWatch('action', form);
+
   useEffect(() => {
     console.log(nodeData)
     if (nodeData != "") {
-      if (nodeData.properties?.type) {
+      if (nodeData.properties?.type == "custom") {
         form.setFieldsValue({
           "inputs": nodeData.properties?.inputs == undefined ? [] : nodeData.properties?.inputs,
           "action": nodeData.properties?.action == undefined ? "or" : nodeData.properties?.action
+        })
+      }
+      if (nodeData.properties?.type == "system") {
+        form.setFieldsValue({
+          "inputs": JSON.parse("[{\"inputType\":\"bool\",\"action\":\"eq\",\"inputFlag\":\"accept\",\"inputValue\":\"true\"}]"),
+          "action": "and"
+        })
+      }
+      if (nodeData?.type == "taskNode") {
+        form.setFieldsValue({
+          "webhook": nodeData.properties?.webhook == undefined ? "" : nodeData.properties?.webhook,
+          "action": nodeData.properties?.action == undefined ? "" : nodeData.properties?.action
         })
       }
       form.setFieldsValue({
@@ -24,6 +40,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
       })
     }
   }, [nodeData])
+
 
   const getApproveList = () => {
     const approveUserOption: JSX.Element[] = []
@@ -36,7 +53,13 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         wrapperCol={{ span: 20 }}
       >
         <Form.Item label="解释">
-          <span className="ant-form-text">  审批节点，等待第三方人员进行审批</span>
+          <span className="ant-form-text">  审批节点，加载第三方系统角色进行审批<br />
+            请在角色获取配置获取第三方角色接口地址，<br />
+            要求get方式请求，返回角色列表如下：
+            <pre>
+              {JSON.stringify(approveUser)}
+            </pre>
+          </span>
         </Form.Item>
         <Form.Item label="唯一标识">
           <span className="ant-form-text">{nodeData.id}</span>
@@ -52,6 +75,17 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         </Form.Item>
         <Form.Item label="下级类型">
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
+        </Form.Item>
+        <Form.Item label="角色获取" name="roleApi" initialValue={"http://www.api.com/api/roles"}>
+          <Search
+            placeholder="请输入获取角色列表地址"
+            allowClear
+            enterButton="加载"
+            size="large"
+            onSearch={(e, v) => {
+              console.log(e, v)
+            }}
+          />
         </Form.Item>
         <Form.Item label="审核节点类型" name="approveType" initialValue={nodeData.properties.action}>
           <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
@@ -93,24 +127,8 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
     return result;
   }
 
-
-  const onActionChange = (value: string) => {
-    switch (value) {
-      case 'apply':
-      case 'finish':
-        form.resetFields(['webhook'])
-    }
-    updateProperty(nodeData.id, {
-      ...nodeData,
-      properties: {
-        ...nodeData.properties,
-        action: value,
-        webhook: ""
-      }
-    });
-  };
-
   const getTaskNode = () => {
+
     const result =
       <Form
         layout="horizontal" form={form} labelCol={{ span: 4 }}
@@ -134,26 +152,29 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="下级类型">
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
         </Form.Item>
-        <Form.Item name="action" label="节点类型" initialValue={nodeData.properties.action}>
+        <Form.Item name="action" label="节点类型" initialValue={'apply'}>
           <Select getPopupContainer={triggerNode => triggerNode.parentNode}
-            options={workNodeType}
-            onChange={onActionChange}
+            options={[
+              {
+                label: '发起审批',
+                value: 'apply'
+              },
+              {
+                label: '系统服务',
+                value: 'webhook'
+              },
+              {
+                label: '审批结束',
+                value: 'finish'
+              },
+            ]}
           />
         </Form.Item>
         {
-          nodeData.properties.action == "webhook" ?
+          actionType == "webhook" ?
             <Form.Item name="webhook" label="webhook" >
               <Input placeholder="http://www.api.com/api/notice"
                 value={nodeData.properties.webhook}
-                onBlur={(e) => {
-                  updateProperty(nodeData.id, {
-                    ...nodeData,
-                    properties: {
-                      ...nodeData.properties,
-                      webhook: e.target.value
-                    }
-                  });
-                }}
               />
             </Form.Item> : <div />
         }
@@ -290,88 +311,120 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="携带参数">
           <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
         </Form.Item>
-        <Form.Item label="文字描述" name="lineDesc" >
-          <Input style={{ width: 250 }} />
-        </Form.Item>
-        {nodeData.properties?.type && <div>
-          <Form.Item label="关系条件" name="action" initialValue={{ 'action': nodeData.properties.action }}>
-            <Radio.Group >
-              <Radio.Button value='and'>且</Radio.Button>
-              <Radio.Button value="or">或</Radio.Button>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item label="条件" rules={[{ required: true }]}>
-            <Form.List
-              name="inputs"
-              rules={[
-                {
-                  validator: async (index, inputs) => {
-                    // console.log(index, inputs)
-                    if (!inputs || inputs.length < 1) {
-                      return Promise.reject(new Error('至少设置1个条件'));
-                    }
-                  },
-                },
-              ]}
-            >
-              {(fields, { add, remove }, { errors }) => (
-                <>
-                  {fields.map((field, _) => (
-                    <Space key={field.key} style={{ marginBottom: 1 }}>
-                      <Form.Item name={[field.name, 'inputFlag']} validateTrigger="onBlur" rules={[{ required: true, message: '请输入变量' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
-                        <Input style={{ width: 120 }} placeholder="变量" />
-                      </Form.Item>
-                      <Form.Item name={[field.name, 'inputType']} rules={[{ required: true }]} initialValue={'string'}>
-                        <Select style={{ width: 90 }} getPopupContainer={triggerNode => triggerNode.parentNode}
-                          options={[
-                            { label: 'float64', value: 'float64' },
-                            { label: 'bool', value: 'bool' },
-                            { label: 'string', value: 'string' },
-                            { label: '[]string', value: '[]string' },
-                          ]}
-                        >
-                        </Select>
-                      </Form.Item>
-                      <Form.Item name={[field.name, 'action']} rules={[{ required: true }]} initialValue={'eq'}>
-                        <Select style={{ width: 85 }} getPopupContainer={triggerNode => triggerNode.parentNode}
-                          options={[
-                            { label: '等于', value: 'eq' },
-                            { label: '不等于', value: 'ne' },
-                            { label: '大于', value: 'gt' },
-                            { label: '小于', value: 'lt' },
-                            { label: '包含', value: 'in' },
-                            { label: '不包含', value: 'notLn' },
-                          ]}
-                        >
-                        </Select>
-                      </Form.Item>
-                      <Form.Item name={[field.name, 'inputValue']} rules={[{ required: true, message: '请输入比较值' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
-                        <Input style={{ width: 140 }} placeholder="比较值" />
-                      </Form.Item>
-                      <Form.Item >
-                        <MinusCircleOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }} rev={undefined} />
-                      </Form.Item>
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      style={{ width: '25%' }}
-                      icon={<PlusOutlined rev={undefined} />}
-                    >
-                      添加条件
-                    </Button>
-                    <Form.ErrorList errors={errors} />
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
-          </Form.Item>
-        </div>}
+        {
+          !nodeData.properties?.type ?
+            <Form.Item label="文字描述" name="lineDesc" >
+              <Input style={{ width: 250 }} />
+            </Form.Item>
+            :
+            nodeData.properties?.type && (
+              nodeData.properties?.type == "custom" ? <div>
+                <Form.Item label="文字描述" name="lineDesc" >
+                  <Input style={{ width: 250 }} />
+                </Form.Item>
+                <Form.Item label="关系条件" name="action" initialValue={{ 'action': nodeData.properties.action }}>
+                  <Radio.Group >
+                    <Radio.Button value='and'>且</Radio.Button>
+                    <Radio.Button value="or">或</Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item label="条件" rules={[{ required: true }]}>
+                  <Form.List
+                    name="inputs"
+                    rules={[
+                      {
+                        validator: async (index, inputs) => {
+                          // console.log(index, inputs)
+                          if (!inputs || inputs.length < 1) {
+                            return Promise.reject(new Error('至少设置1个条件'));
+                          }
+                        },
+                      },
+                    ]}
+                  >
+                    {(fields, { add, remove }, { errors }) => (
+                      <>
+                        {fields.map((field, _) => (
+                          <Space key={field.key} style={{ marginBottom: 1 }}>
+                            <Form.Item name={[field.name, 'inputFlag']} validateTrigger="onBlur" rules={[{ required: true, message: '请输入变量' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+                              <Input style={{ width: 120 }} placeholder="变量" />
+                            </Form.Item>
+                            <Form.Item name={[field.name, 'inputType']} rules={[{ required: true }]} initialValue={'string'}>
+                              <Select style={{ width: 90 }} getPopupContainer={triggerNode => triggerNode.parentNode}
+                                options={[
+                                  { label: 'float64', value: 'float64' },
+                                  { label: 'bool', value: 'bool' },
+                                  { label: 'string', value: 'string' },
+                                  { label: '[]string', value: '[]string' },
+                                ]}
+                              >
+                              </Select>
+                            </Form.Item>
+                            <Form.Item name={[field.name, 'action']} rules={[{ required: true }]} initialValue={'eq'}>
+                              <Select style={{ width: 85 }} getPopupContainer={triggerNode => triggerNode.parentNode}
+                                options={[
+                                  { label: '等于', value: 'eq' },
+                                  { label: '不等于', value: 'ne' },
+                                  { label: '大于', value: 'gt' },
+                                  { label: '小于', value: 'lt' },
+                                  { label: '包含', value: 'in' },
+                                  { label: '不包含', value: 'notLn' },
+                                ]}
+                              >
+                              </Select>
+                            </Form.Item>
+                            <Form.Item name={[field.name, 'inputValue']} rules={[{ required: true, message: '请输入比较值' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+                              <Input style={{ width: 140 }} placeholder="比较值" />
+                            </Form.Item>
+                            <Form.Item >
+                              <MinusCircleOutlined
+                                onClick={() => {
+                                  remove(field.name);
+                                }} rev={undefined} />
+                            </Form.Item>
+                          </Space>
+                        ))}
+                        <Form.Item>
+                          <Button
+                            type="dashed"
+                            onClick={() => add()}
+                            style={{ width: '25%' }}
+                            icon={<PlusOutlined rev={undefined} />}
+                          >
+                            添加条件
+                          </Button>
+                          <Form.ErrorList errors={errors} />
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
+                </Form.Item>
+              </div> : <div>
+                <Form.Item label="文字描述" name="lineDesc" initialValue={"审批拒绝"} rules={[{ required: true, message: '请输入变量' }]}  >
+                  <Radio.Group
+                    onChange={(e) => {
+                      if (e.target.value == "审批通过") {
+                        form.setFieldValue("inputs", JSON.parse("[{\"inputType\":\"bool\",\"action\":\"eq\",\"inputFlag\":\"accept\",\"inputValue\":\"true\"}]"))
+                      } else {
+                        form.setFieldValue("inputs", JSON.parse("[{\"inputType\":\"bool\",\"action\":\"eq\",\"inputFlag\":\"accept\",\"inputValue\":\"false\"}]"))
+                      }
+                    }}>
+                    <Radio value="审批通过">审批通过</Radio>
+                    <Radio value="审批拒绝">审批拒绝</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item label="关系条件" name="action" initialValue={{ 'action': 'and' }} hidden>
+                  <Radio.Group >
+                    <Radio.Button value='and'>且</Radio.Button>
+                    <Radio.Button value="or">或</Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item label="条件" hidden name="inputs">
+                  <Input />
+                </Form.Item>
+              </div>)
+        }
+
       </Form>
       ;
 
@@ -396,22 +449,34 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <Space>
             <Button type="primary" onClick={(e) => {
               console.log(e)
-              form.submit()
               form.validateFields().then(value => {
                 // 验证通过后进入 
-                console.log(value, "success");
-                updateProperty(nodeData.id, {
-                  ...nodeData,
-                  properties: {
-                    ...nodeData.properties,
-                    ...value,
-                    type: 'Condition',
-                  },
-                  text: {
-                    ...nodeData.text,
-                    value: value.lineDesc
-                  }
-                });
+                console.log(value, "success", nodeData);
+                if (nodeData.type == "polyline") {
+                  updateProperty(nodeData.id, {
+                    ...nodeData,
+                    properties: {
+                      ...nodeData.properties,
+                      ...value,
+                      type: nodeData.properties?.type,
+                    },
+                    text: {
+                      value: value.lineDesc
+                    }
+                  });
+                } else {
+                  updateProperty(nodeData.id, {
+                    ...nodeData,
+                    properties: {
+                      ...nodeData.properties,
+                      ...value,
+                    },
+                    text: {
+                      ...nodeData.text,
+                    }
+                  });
+                }
+
               }).catch(err => { // 验证不通过时进入
                 console.log("error,核验失败", err);
               });

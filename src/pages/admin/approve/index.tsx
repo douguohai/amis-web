@@ -112,26 +112,28 @@ export default function ApproveExample() {
       const targetNode = lf.graphModel.nodesMap[targetId];
       const preType = sourceNode.model.getProperties().type
       const preAction = sourceNode.model.getProperties().action
-      if (preType != "conditionGateWay" && preAction != "parallelGateway-start") {
+      if (["conditionGateWay", "approval"].indexOf(preType) < 0 || preAction != "parallelGateway-start") {
         lf.setProperties(sourceId, {
           next: targetId,
           nextType: targetNode.model.getProperties().type,
         });
       }
+
       targetNode.model.setProperties(Object.assign(targetNode.model.properties, {
         pre: sourceId,
       }));
 
-      if (preType == "conditionGateWay" || preAction == "parallelGateway-start") {
+      if (preType == "conditionGateWay" || preAction == "parallelGateway-start" || preType == "approval") {
         lf.setProperties(edgeId, {
-          type: "Condition",
+          type: "approval" == preType ? "system" : "custom",  // 判断条件类型  custom(自定义) system(系统默认)
           nextType: targetNode.model.getProperties().type,
           pre: sourceId,
         });
       }
     });
+
     lf.on('edge:delete', (data: any) => {
-      //线连接成功触发该事件
+      //线连被删除触发该事件
       console.log("线被删除了", data, data.data.sourceNodeId);
       const sourceId = data.data.sourceNodeId;
       const sourceNode = lf.graphModel.nodesMap[sourceId];
@@ -153,13 +155,13 @@ export default function ApproveExample() {
     });
 
     lf.on('history:change', (data: any) => {
-      //线连接成功触发该事件
+      //触发存储历史数据事件
       console.log("历史", data);
     });
 
     lf.on('node:dnd-add', (data: any) => {
       console.log(data)
-      //线连接成功触发该事件
+      //控制面板新托拽节点
       const node = data.data;
       if (node.type == "parallelGateway" && node.properties?.action == "parallelGateway-start") {
         const end = lf.addNode({
@@ -179,7 +181,7 @@ export default function ApproveExample() {
     });
 
     lf.on('node:delete', (e: any) => {
-      //线连接成功触发该事件
+      //删除节点触发事件
       console.log("删除节点", e);
       if (e.data.type = "parallelGateway") {
         lf.deleteNode(e.data.properties.friend)
@@ -202,9 +204,14 @@ export default function ApproveExample() {
         nodeModel.updateText(data.properties.action);
       }
     } else if (edge) {
+      console.log(edge)
       edge.model.updateText(data.text?.value)
-      edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
-      if (edge.model.getProperties().type = "Condition") {
+      const sourceId = data.sourceNodeId;
+      const sourceNode = lf.graphModel.nodesMap[sourceId];
+      const preType = sourceNode.model.getProperties().type
+      const preAction = sourceNode.model.getProperties().action
+      if (["parallelGateway", "approval", "conditionGateWay"].indexOf(preType) >= 0 && preAction != "parallelGateway-end") {
+        edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
         const sourceId = edge.model.getProperties().pre;
         lf.setProperties(sourceId, {
           conditions: lf.getNodeOutgoingEdge(sourceId).map(element => {
@@ -212,6 +219,11 @@ export default function ApproveExample() {
             return params;
           }),
         });
+
+      } else {
+        let { type, ...temp } = data.properties
+        edge.model.setProperties(Object.assign(edge.model.properties, temp));
+        data.properties = temp
       }
     }
     setNodeData(data);

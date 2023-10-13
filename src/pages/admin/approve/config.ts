@@ -17,21 +17,6 @@ export const approveUser = [
   },
 ]
 
-export const workNodeType = [
-  {
-    label: '发起审批',
-    value: 'apply'
-  },
-  {
-    label: '系统服务',
-    value: 'webhook'
-  },
-  {
-    label: '审批结束',
-    value: 'finish'
-  },
-]
-
 // 主题
 export const themeApprove = {
   rect: { // 矩形样式
