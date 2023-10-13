@@ -74,19 +74,10 @@ export default function ApproveExample() {
       {
         type: 'parallelGateway',
         text: '并行开始',
-        label: '并行开始',
+        label: '并行网关',
         icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAXBJREFUOE+1lb1KA0EUhc/dVFbqLsReMgk2Fr6BIBaCTTpfwGKWpBG0NHaCYKFmQHyBNOkEERvfQGyEZNfUQsiuglhokiuz+dH8sQo7U83MPXxzZu6dGYKBRgaYmApdVP4uwDuxCzJXQjd7Oa6bCrXLXgjCQiwUeAukmNBNQB3lHTNwANAHuHMyE0zWPoA5AKeBFHu/dSPQeVVbTsF61gJmuKEr1Cyoo/wCg890PMUkmm7GH2hHoLaqVwHKE/DQkmItbvu28h8BXiXguiXF9gTUUbUNhnWnA90O1l8L4j4WWvY2QbiNdgbaCmXmRveHTm3lPQFYAbgSyGx85vsr2sqvApwHUA+kyA2hjvJcBi70xGcb6feiaMa5HMTTV42l9lfnpQejYktmziOntvI4EnH3KHBzpb8CBzq7XCuBrEM9DqSgCGrEad9tsmfac2sg+z23Cdephhq5Uf2kJXv3f0ok4VdKg428p/8t/nG9ke/kG4C0wRY4obbdAAAAAElFTkSuQmCC',
         properties: {
           "action": "parallelGateway-start"
-        }
-      },
-      {
-        type: 'parallelGateway',
-        text: '并行结束',
-        label: '并行结束',
-        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAXVJREFUOE+1lb1KxEAUhc/1Z4LYWGm1syiu2TQWvoEgFoLNdr6AzaKNoKVrJwgWKoJvYLOdIGLjG4iNSRYVErdYsBAbIRPNlQwb2V+ikKTK5J75cu7cuTOEHB7KgYmBUFuObxJjI+2HTLi0/PCiVzcQ6kjxDmAqDQrgo+yrPl0f1JHiEMAegE8GjoaBCdgFMMHEx5YX7nTquqCuNOYY/BwLiLlqvobnw6ANaWxF4JM4PhZRab4ZPCXaLqhdEHUiVBi4t3y1lJa+UxQPYCwScGX6ar0P6kpjhcG3cYCjaNlqft2lQe2CsUrENzozojXTC671ezLRkeIRgKUr6qnUyifz3IKoM6ECQqPsKfMX6haNKjOfxR9GlZoutfCW5jKJv8xOzqjvsBWPR0DbC35wqp06UrBOGziwfFX7KzDR2VLUCNiPx2VfkYbm4rTtNts11W7zqH4Mznyftt1m31Httc229zsaIdtTSq9tHufpfzd/rz6X6+QHcg3KFkZDYP8AAAAASUVORK5CYII=',
-        properties: {
-          "action": "parallelGateway-end"
         }
       },
       {
@@ -116,31 +107,83 @@ export default function ApproveExample() {
       console.log("线连接成功触发该事件", data.edgeModel.sourceNodeId, data.edgeModel.targetNodeId);
       const sourceId = data.edgeModel.sourceNodeId;
       const targetId = data.edgeModel.targetNodeId;
+      const edgeId = data.edgeModel.id;
       const sourceNode = lf.graphModel.nodesMap[sourceId];
       const targetNode = lf.graphModel.nodesMap[targetId];
-      sourceNode.model.setProperties(Object.assign(sourceNode.model.properties, {
-        next: targetId,
-        nextType: targetNode.model.getProperties().type,
-      }));
+      const preType = sourceNode.model.getProperties().type
+      const preAction = sourceNode.model.getProperties().action
+      if (preType != "conditionGateWay" && preAction != "parallelGateway-start") {
+        lf.setProperties(sourceId, {
+          next: targetId,
+          nextType: targetNode.model.getProperties().type,
+        });
+      }
       targetNode.model.setProperties(Object.assign(targetNode.model.properties, {
         pre: sourceId,
       }));
+
+      if (preType == "conditionGateWay" || preAction == "parallelGateway-start") {
+        lf.setProperties(edgeId, {
+          type: "Condition",
+          nextType: targetNode.model.getProperties().type,
+          pre: sourceId,
+        });
+      }
     });
     lf.on('edge:delete', (data: any) => {
       //线连接成功触发该事件
       console.log("线被删除了", data, data.data.sourceNodeId);
       const sourceId = data.data.sourceNodeId;
       const sourceNode = lf.graphModel.nodesMap[sourceId];
+      const preType = sourceNode.model.getProperties().type
+      const preAction = sourceNode.model.getProperties().action
       sourceNode.model.setProperties(Object.assign(sourceNode.model.properties, {
         next: '',
         nextType: '',
       }));
-      console.log(sourceNode.model.getProperties())
+      if (preType == "conditionGateWay" || preAction == "parallelGateway-start") {
+        lf.setProperties(sourceId, {
+          conditions: lf.getNodeOutgoingEdge(sourceId).map(element => {
+            let { lineDesc, ...params } = element.getProperties()
+            return params;
+          }),
+        });
+      }
+
     });
 
     lf.on('history:change', (data: any) => {
       //线连接成功触发该事件
       console.log("历史", data);
+    });
+
+    lf.on('node:dnd-add', (data: any) => {
+      console.log(data)
+      //线连接成功触发该事件
+      const node = data.data;
+      if (node.type == "parallelGateway" && node.properties?.action == "parallelGateway-start") {
+        const end = lf.addNode({
+          type: "parallelGateway",
+          properties: {
+            "action": "parallelGateway-end",
+            "friend": node.id,
+          },
+          text: { x: node.x + 300, y: node.y, value: '并行结束' },
+          x: node.x + 300,
+          y: node.y
+        })
+        lf.setProperties(node.id, {
+          "friend": end.id,
+        });
+      }
+    });
+
+    lf.on('node:delete', (e: any) => {
+      //线连接成功触发该事件
+      console.log("删除节点", e);
+      if (e.data.type = "parallelGateway") {
+        lf.deleteNode(e.data.properties.friend)
+      }
     });
 
   }
@@ -161,6 +204,15 @@ export default function ApproveExample() {
     } else if (edge) {
       edge.model.updateText(data.text?.value)
       edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
+      if (edge.model.getProperties().type = "Condition") {
+        const sourceId = edge.model.getProperties().pre;
+        lf.setProperties(sourceId, {
+          conditions: lf.getNodeOutgoingEdge(sourceId).map(element => {
+            let { lineDesc, ...params } = element.getProperties()
+            return params;
+          }),
+        });
+      }
     }
     setNodeData(data);
   }

@@ -119,8 +119,7 @@ export default function RegisteNode(lf: LogicFlow) {
       super(data, graphModel);
       this.properties = {
         labelColor: '#000000',
-        approveTypeLabel: '',
-        approveType: ''
+        type: 'approval',
       }
     }
   }
@@ -143,7 +142,6 @@ export default function RegisteNode(lf: LogicFlow) {
         [0, 35],
       ];
       this.properties = {
-        api: '',
         type: 'conditionGateWay',
       }
     }
@@ -191,7 +189,6 @@ export default function RegisteNode(lf: LogicFlow) {
   // 并行条件节点
   class ParallelGatewayModel extends PolygonNodeModel {
     constructor(data: any, graphModel: GraphModel) {
-      console.log(data)
       super(data, graphModel);
       this.points = [
         [40, 0],
@@ -203,6 +200,7 @@ export default function RegisteNode(lf: LogicFlow) {
       ];
       this.properties = {
         ...data.properties,
+        type: 'parallelGateWay',
       }
     }
   }

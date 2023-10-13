@@ -10,6 +10,21 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    console.log(nodeData)
+    if (nodeData != "") {
+      if (nodeData.properties?.type) {
+        form.setFieldsValue({
+          "inputs": nodeData.properties?.inputs == undefined ? [] : nodeData.properties?.inputs,
+          "action": nodeData.properties?.action == undefined ? "or" : nodeData.properties?.action
+        })
+      }
+      form.setFieldsValue({
+        "lineDesc": nodeData.text?.value == undefined ? "" : nodeData.text?.value,
+      })
+    }
+  }, [nodeData])
+
   const getApproveList = () => {
     const approveUserOption: JSX.Element[] = []
     approveUser.forEach((item: IApproveUser) => {
@@ -21,13 +36,13 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         wrapperCol={{ span: 20 }}
       >
         <Form.Item label="解释">
-          <span className="ant-form-text">  引擎开始节点，无任何业务意义，标识逻辑开始</span>
+          <span className="ant-form-text">  审批节点，等待第三方人员进行审批</span>
         </Form.Item>
         <Form.Item label="唯一标识">
           <span className="ant-form-text">{nodeData.id}</span>
         </Form.Item>
         <Form.Item label="节点类型">
-          <span className="ant-form-text">{nodeData.properties.type}(申请节点)</span>
+          <span className="ant-form-text">{nodeData.properties.type}(审批节点)</span>
         </Form.Item>
         <Form.Item label="携带参数">
           <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
@@ -39,7 +54,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
         </Form.Item>
         <Form.Item label="审核节点类型" name="approveType" initialValue={nodeData.properties.action}>
-          <Select>
+          <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
             {approveUserOption}
           </Select>
         </Form.Item>
@@ -166,11 +181,8 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <Form.Item label="上级节点">
             <span className="ant-form-text">{nodeData.properties.pre}</span>
           </Form.Item>
-          <Form.Item label="下级节点">
-            <span className="ant-form-text">{nodeData.properties.next}</span>
-          </Form.Item>
-          <Form.Item label="下级类型">
-            <span className="ant-form-text">{nodeData.properties.nextType}</span>
+          <Form.Item label="伙伴节点">
+            <span className="ant-form-text">{nodeData.properties.friend}</span>
           </Form.Item>
         </Form>
       )
@@ -197,6 +209,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           </Form.Item>
           <Form.Item label="下级类型">
             <span className="ant-form-text">{nodeData.properties.nextType}</span>
+          </Form.Item>
+          <Form.Item label="伙伴节点">
+            <span className="ant-form-text">{nodeData.properties.friend}</span>
           </Form.Item>
         </Form>
       )
@@ -254,16 +269,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
     return result;
   }
 
-  useEffect(() => {
-    form.setFieldsValue({ "desc": nodeData.text?.value == undefined ? "" : nodeData.text?.value, "inputs": [] })
-  }, [nodeData])
-
   const getPolylineNode = () => {
-    // const desc = nodeData.text?.value == undefined ? "" : nodeData.text?.value
-    // form.setFieldValue("desc", desc)
-    // console.log('getPolylineNode', nodeData, desc)
-
-
     const result =
       <Form
         layout="horizontal" form={form} labelCol={{ span: 4 }}
@@ -281,96 +287,91 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="目的地标识">
           <span className="ant-form-text">{nodeData.targetNodeId}</span>
         </Form.Item>
-        <Form.Item label="文字描述" name="desc" >
-          <Input style={{ width: 250 }}
-            onBlur={(e) => {
-              updateProperty(nodeData.id, {
-                ...nodeData,
-                text: {
-                  ...nodeData.text,
-                  value: e.target.value
-                }
-              });
-            }}
-          />
+        <Form.Item label="携带参数">
+          <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
         </Form.Item>
-        <Form.Item label="关系条件" name="action" initialValue={{ 'action': "or" }}>
-          <Radio.Group>
-            <Radio.Button value='and'>且</Radio.Button>
-            <Radio.Button value="or">或</Radio.Button>
-          </Radio.Group>
+        <Form.Item label="文字描述" name="lineDesc" >
+          <Input style={{ width: 250 }} />
         </Form.Item>
-        <Form.Item label="条件" rules={[{ required: true }]}>
-          <Form.List
-            name="inputs"
-            rules={[
-              {
-                validator: async (index, inputs) => {
-                  console.log(index, inputs)
-                  if (!inputs || inputs.length < 1) {
-                    return Promise.reject(new Error('至少设置1个条件'));
-                  }
+        {nodeData.properties?.type && <div>
+          <Form.Item label="关系条件" name="action" initialValue={{ 'action': nodeData.properties.action }}>
+            <Radio.Group >
+              <Radio.Button value='and'>且</Radio.Button>
+              <Radio.Button value="or">或</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item label="条件" rules={[{ required: true }]}>
+            <Form.List
+              name="inputs"
+              rules={[
+                {
+                  validator: async (index, inputs) => {
+                    // console.log(index, inputs)
+                    if (!inputs || inputs.length < 1) {
+                      return Promise.reject(new Error('至少设置1个条件'));
+                    }
+                  },
                 },
-              },
-            ]}
-          >
-            {(fields, { add, remove }, { errors }) => (
-              <>
-                {fields.map((field, _) => (
-                  <Space key={field.key} style={{ marginBottom: 1 }}>
-                    <Form.Item name={[field.name, 'inputFlag']} validateTrigger="onBlur" rules={[{ required: true, message: '请输入变量' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
-                      <Input style={{ width: 120 }} placeholder="变量" />
-                    </Form.Item>
-                    <Form.Item name={[field.name, 'inputType']} rules={[{ required: true }]} initialValue={'string'}>
-                      <Select style={{ width: 90 }} getPopupContainer={triggerNode => triggerNode.parentNode}
-                        options={[
-                          { label: 'float64', value: 'float64' },
-                          { label: 'bool', value: 'bool' },
-                          { label: 'string', value: 'string' },
-                          { label: '[]string', value: '[]string' },
-                        ]}
-                      >
-                      </Select>
-                    </Form.Item>
-                    <Form.Item name={[field.name, 'action']} rules={[{ required: true }]} initialValue={'eq'}>
-                      <Select style={{ width: 85 }} getPopupContainer={triggerNode => triggerNode.parentNode}
-                        options={[
-                          { label: '等于', value: 'eq' },
-                          { label: '不等于', value: 'ne' },
-                          { label: '大于', value: 'gt' },
-                          { label: '小于', value: 'lt' },
-                          { label: '包含', value: 'in' },
-                          { label: '不包含', value: 'notLn' },
-                        ]}
-                      >
-                      </Select>
-                    </Form.Item>
-                    <Form.Item name={[field.name, 'inputValue']} rules={[{ required: true, message: '请输入比较值' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
-                      <Input style={{ width: 140 }} placeholder="比较值" />
-                    </Form.Item>
-                    <Form.Item >
-                      <MinusCircleOutlined
-                        onClick={() => {
-                          remove(field.name);
-                        }} rev={undefined} />
-                    </Form.Item>
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button
-                    type="dashed"
-                    onClick={() => add()}
-                    style={{ width: '25%' }}
-                    icon={<PlusOutlined rev={undefined} />}
-                  >
-                    添加条件
-                  </Button>
-                  <Form.ErrorList errors={errors} />
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
-        </Form.Item>
+              ]}
+            >
+              {(fields, { add, remove }, { errors }) => (
+                <>
+                  {fields.map((field, _) => (
+                    <Space key={field.key} style={{ marginBottom: 1 }}>
+                      <Form.Item name={[field.name, 'inputFlag']} validateTrigger="onBlur" rules={[{ required: true, message: '请输入变量' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+                        <Input style={{ width: 120 }} placeholder="变量" />
+                      </Form.Item>
+                      <Form.Item name={[field.name, 'inputType']} rules={[{ required: true }]} initialValue={'string'}>
+                        <Select style={{ width: 90 }} getPopupContainer={triggerNode => triggerNode.parentNode}
+                          options={[
+                            { label: 'float64', value: 'float64' },
+                            { label: 'bool', value: 'bool' },
+                            { label: 'string', value: 'string' },
+                            { label: '[]string', value: '[]string' },
+                          ]}
+                        >
+                        </Select>
+                      </Form.Item>
+                      <Form.Item name={[field.name, 'action']} rules={[{ required: true }]} initialValue={'eq'}>
+                        <Select style={{ width: 85 }} getPopupContainer={triggerNode => triggerNode.parentNode}
+                          options={[
+                            { label: '等于', value: 'eq' },
+                            { label: '不等于', value: 'ne' },
+                            { label: '大于', value: 'gt' },
+                            { label: '小于', value: 'lt' },
+                            { label: '包含', value: 'in' },
+                            { label: '不包含', value: 'notLn' },
+                          ]}
+                        >
+                        </Select>
+                      </Form.Item>
+                      <Form.Item name={[field.name, 'inputValue']} rules={[{ required: true, message: '请输入比较值' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+                        <Input style={{ width: 140 }} placeholder="比较值" />
+                      </Form.Item>
+                      <Form.Item >
+                        <MinusCircleOutlined
+                          onClick={() => {
+                            remove(field.name);
+                          }} rev={undefined} />
+                      </Form.Item>
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      style={{ width: '25%' }}
+                      icon={<PlusOutlined rev={undefined} />}
+                    >
+                      添加条件
+                    </Button>
+                    <Form.ErrorList errors={errors} />
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </Form.Item>
+        </div>}
       </Form>
       ;
 
@@ -382,15 +383,41 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
 
   return (
-    nodeData == "" ? <div /> :
-      <Drawer
-        destroyOnClose={true}
+    nodeData in ["", undefined] ? <div /> :
+      <Drawer forceRender={true}
+        // destroyOnClose={true}
         title="属性面板"
         placement={'right'}
         width={650}
         onClose={onClose}
         zIndex={100000}
         open={open}
+        extra={
+          <Space>
+            <Button type="primary" onClick={(e) => {
+              console.log(e)
+              form.submit()
+              form.validateFields().then(value => {
+                // 验证通过后进入 
+                console.log(value, "success");
+                updateProperty(nodeData.id, {
+                  ...nodeData,
+                  properties: {
+                    ...nodeData.properties,
+                    ...value,
+                    type: 'Condition',
+                  },
+                  text: {
+                    ...nodeData.text,
+                    value: value.lineDesc
+                  }
+                });
+              }).catch(err => { // 验证不通过时进入
+                console.log("error,核验失败", err);
+              });
+            }}>更新</Button>
+          </Space>
+        }
       >
         {nodeData.properties?.type === "start" ? getStart() : ''}
         {nodeData.type === "taskNode" ? getTaskNode() : ''}
