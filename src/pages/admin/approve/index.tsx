@@ -53,6 +53,17 @@ export default function ApproveExample() {
 
   }, []);
 
+  lf.setTheme({
+    edgeText: {
+      textWidth: 100,
+      overflowMode: "autoWrap",
+      fontSize: 12,
+      background: {
+        fill: "#FFFFFF",
+      },
+    },
+  });
+
 
   const initPanel = (lf: LogicFlow) => {
     lf.extension.dndPanel.setPatternItems([
@@ -108,7 +119,14 @@ export default function ApproveExample() {
       console.log(JSON.stringify(lf.getGraphData()));
     });
     lf.on('connection:not-allowed', (data: any) => {
-      message.error(data.msg);
+      message.open({
+        type: 'error',
+        content: data.msg,
+        duration: 4,
+        style: {
+          marginTop: '15vh',
+        },
+      });
     });
     lf.on('anchor:drop', (data: any) => {
       //线连接成功触发该事件
@@ -167,12 +185,6 @@ export default function ApproveExample() {
     lf.on('history:change', (data: any) => {
       //触发存储历史数据事件
       console.log("历史", data);
-    });
-
-
-    lf.on('connection:not-allowed', (data: any) => {
-      //不允许建立联系
-      console.log("不允许建立联系", data);
     });
 
     lf.on('node:dnd-add', (data: any) => {
