@@ -119,6 +119,7 @@ export default function RegisteNode(lf: LogicFlow) {
       this.properties = {
         labelColor: '#000000',
         type: 'approval',
+        roleApi: '/api/roles',
       }
     }
   }
@@ -220,11 +221,29 @@ export default function RegisteNode(lf: LogicFlow) {
       }
     }
 
+
+    getConnectedTargetRules(): ConnectRule[] {
+      const rules = super.getConnectedTargetRules();
+
+      const justFinshedTaskNodeAsTarget = {
+        message: '结束节点只允许任务节点的finshed允许连接',
+        validate: (source?: BaseNodeModel, target?: BaseNodeModel) => {
+          console.log(source, target)
+          console.log(source?.getProperties().action)
+          let isValid = source?.type == "taskNode" && source?.getProperties().action == "finish"
+          return isValid;
+        },
+      };
+      rules.push(justFinshedTaskNodeAsTarget);
+      return rules;
+    }
+
     getConnectedSourceRules(): ConnectRule[] {
       const rules = super.getConnectedSourceRules();
       const geteWayOnlyAsTarget = {
         message: '结束节点只能连入，不能连出！',
-        validate: (source: BaseNodeModel) => {
+        validate: (source?: BaseNodeModel, target?: BaseNodeModel) => {
+          console.log(source, target)
           let isValid = true;
           if (source) {
             isValid = false;
@@ -237,6 +256,7 @@ export default function RegisteNode(lf: LogicFlow) {
       return rules;
     }
   }
+
 
   lf.register({
     type: 'finsh',

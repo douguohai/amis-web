@@ -5,32 +5,34 @@ import PropertyPanel from './components/property';
 import RegisteNode from './components/registerNode';
 import { themeApprove, data } from './config';
 import "@logicflow/extension/lib/style/index.css";
-import './index.css';
 import "@logicflow/core/dist/style/index.css";
 import '@logicflow/extension/lib/style/index.css'
 import { message } from 'antd';
 
-const config = {
-  width: 1500,
-  height: 800,
-  grid: {
-    size: 10,
-    visible: true,
-    type: 'mesh',
-    config: {
-      color: '#DCDCDC',  // 设置网格的颜色
-    }
-  },
-  keyboard: { enabled: false },
-  style: themeApprove,
-  plugins: [Menu, Control, DndPanel],
-}
+// https://site.logic-flow.cn/docs/#/zh/guide/extension/adapter
+
+
 
 export default function ApproveExample() {
 
   const [lf, setLf] = useState({} as LogicFlow);
   const [nodeData, setNodeData] = useState("");
   const [open, setOpen] = useState(false);
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const config = {
+    grid: {
+      size: 10,
+      visible: true,
+      type: 'mesh',
+      config: {
+        color: '#DCDCDC',  // 设置网格的颜色
+      }
+    },
+    keyboard: { enabled: false },
+    style: themeApprove,
+    plugins: [Menu, Control, DndPanel],
+  }
 
   useEffect(() => {
     const lf = new LogicFlow({
@@ -42,6 +44,13 @@ export default function ApproveExample() {
     lf.render(data);
     initEvent(lf);
     initPanel(lf)
+
+    const handleResize = () => setHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+
   }, []);
 
 
@@ -112,22 +121,23 @@ export default function ApproveExample() {
       const targetNode = lf.graphModel.nodesMap[targetId];
       const preType = sourceNode.model.getProperties().type
       const preAction = sourceNode.model.getProperties().action
-      if (["conditionGateWay", "approval"].indexOf(preType) < 0 || preAction != "parallelGateway-start") {
+      if (["conditionGateWay", "approval"].indexOf(preType) < 0 && preAction != "parallelGateway-start") {
         lf.setProperties(sourceId, {
-          next: targetId,
+          nextId: targetId,
           nextType: targetNode.model.getProperties().type,
         });
       }
 
       targetNode.model.setProperties(Object.assign(targetNode.model.properties, {
-        pre: sourceId,
+        preId: sourceId,
       }));
 
       if (preType == "conditionGateWay" || preAction == "parallelGateway-start" || preType == "approval") {
         lf.setProperties(edgeId, {
           type: "approval" == preType ? "system" : "custom",  // 判断条件类型  custom(自定义) system(系统默认)
           nextType: targetNode.model.getProperties().type,
-          pre: sourceId,
+          nextId: targetId,
+          preId: sourceId,
         });
       }
     });
@@ -140,7 +150,7 @@ export default function ApproveExample() {
       const preType = sourceNode.model.getProperties().type
       const preAction = sourceNode.model.getProperties().action
       sourceNode.model.setProperties(Object.assign(sourceNode.model.properties, {
-        next: '',
+        nextId: '',
         nextType: '',
       }));
       if (preType == "conditionGateWay" || preAction == "parallelGateway-start") {
@@ -157,6 +167,12 @@ export default function ApproveExample() {
     lf.on('history:change', (data: any) => {
       //触发存储历史数据事件
       console.log("历史", data);
+    });
+
+
+    lf.on('connection:not-allowed', (data: any) => {
+      //不允许建立联系
+      console.log("不允许建立联系", data);
     });
 
     lf.on('node:dnd-add', (data: any) => {
@@ -193,7 +209,6 @@ export default function ApproveExample() {
 
   // 更新属性
   const updateProperty = (id: string, data: any) => {
-    console.log(id, data.properties)
     const node = lf.graphModel.nodesMap[id];
     const edge = lf.graphModel.edgesMap[id];
     if (node) {
@@ -201,6 +216,18 @@ export default function ApproveExample() {
       const nodeModel = lf.getNodeModelById(id);
       if (nodeModel.type == "taskNode") {
         console.log(nodeModel)
+        const currentNextId = nodeModel.getProperties().nextId;
+        if ("" != currentNextId && lf.getNodeDataById(currentNextId)?.type == "finsh") {
+          lf.deleteEdgeByNodeId({
+            sourceNodeId: id,
+            targetNodeId: currentNextId,
+          });
+          let { nextId, nextType, ...temp } = node.model.properties
+          lf.setProperties(id, temp)
+          lf.deleteProperty(currentNextId, "preId")
+          let { type, ...temp2 } = data.properties
+          data.properties = temp2
+        }
         nodeModel.updateText(data.properties.action);
       }
     } else if (edge) {
@@ -212,7 +239,7 @@ export default function ApproveExample() {
       const preAction = sourceNode.model.getProperties().action
       if (["parallelGateway", "approval", "conditionGateWay"].indexOf(preType) >= 0 && preAction != "parallelGateway-end") {
         edge.model.setProperties(Object.assign(edge.model.properties, data.properties));
-        const sourceId = edge.model.getProperties().pre;
+        const sourceId = edge.model.getProperties().preId;
         lf.setProperties(sourceId, {
           conditions: lf.getNodeOutgoingEdge(sourceId).map(element => {
             let { lineDesc, ...params } = element.getProperties()
@@ -235,8 +262,8 @@ export default function ApproveExample() {
   };
 
   return (
-    <div className="approve-example-container">
-      <div id="graph" className="viewport" />
+    <div>
+      <div id="graph" style={{ height: height - 70 }} />
       <PropertyPanel updateProperty={updateProperty} onClose={onClose} nodeData={nodeData} open={open} />
     </div>
   )

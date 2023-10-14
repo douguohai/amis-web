@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { approveUser } from '../config';
-import { IApproveUser } from '../type';
-import { Drawer, Select, Form, Input, Button, Radio, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Drawer, Select, Form, Input, Button, Radio, Space, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined, } from '@ant-design/icons';
+import ReactJson from 'react-json-view'
+import { request } from '@/utils/requestInterceptor';
 
 const { Search } = Input;
 
@@ -11,6 +11,10 @@ const { Search } = Input;
 export default function PropertyPanel({ nodeData, updateProperty, onClose, open }) {
 
   const [form] = Form.useForm();
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const [approveUser, setApproveUser] = useState(JSON.parse("{\"status\":0,\"data\":[{\"label\":\"T3领导-系统填充\",\"value\":\"t3Leader\"},{\"label\":\"T2领导-系统填充\",\"value\":\"t2Leader\"},{\"label\":\"T1领导-系统填充\",\"value\":\"t1Leader\"}]}"));
 
   let actionType = Form.useWatch('action', form);
 
@@ -35,18 +39,54 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           "action": nodeData.properties?.action == undefined ? "" : nodeData.properties?.action
         })
       }
-      form.setFieldsValue({
-        "lineDesc": nodeData.text?.value == undefined ? "" : nodeData.text?.value,
-      })
+
+      if (nodeData?.type == "polyline") {
+        form.setFieldsValue({
+          "lineDesc": nodeData.text?.value == undefined ? "" : nodeData.text?.value,
+        })
+      }
+
+      if (nodeData?.type == "approver") {
+        const roleApi = nodeData.properties?.roleApi == undefined ? "/api/roles" : nodeData.properties?.roleApi
+        form.setFieldsValue({
+          "roleApi": roleApi,
+          "approveType": nodeData.properties?.approveType == undefined ? "" : nodeData.properties?.approveType,
+        })
+        request({
+          method: "get",
+          url: roleApi,
+        }).then((res: any) => {
+          console.log("res:", res);
+          if (res.data.status != 0) {
+            messageApi.open({
+              type: 'error',
+              content: '加载角色信息失败，请核查接口返回信息是否符合标准，目前采用系统模拟角色',
+              duration: 2,
+              style: {
+                marginTop: '20vh',
+              },
+            });
+          } else {
+            messageApi.open({
+              type: 'success',
+              content: '加载角色信息成功',
+              duration: 2,
+              style: {
+                marginTop: '20vh',
+              },
+            });
+            setApproveUser(res.data)
+          }
+        }).catch((error: any) => {
+          console.log("error:", error);
+        });
+
+      }
     }
   }, [nodeData])
 
 
   const getApproveList = () => {
-    const approveUserOption: JSX.Element[] = []
-    approveUser.forEach((item: IApproveUser) => {
-      approveUserOption.push(<Select.Option value={item.value}>{item.label}</Select.Option>);
-    });
     const approveSelect =
       <Form
         layout="horizontal" form={form} labelCol={{ span: 4 }}
@@ -55,10 +95,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="解释">
           <span className="ant-form-text">  审批节点，加载第三方系统角色进行审批<br />
             请在角色获取配置获取第三方角色接口地址，<br />
-            要求get方式请求，返回角色列表如下：
-            <pre>
-              {JSON.stringify(approveUser)}
-            </pre>
+            http://www.api.com/api/roles<br />
+            要求get方式请求，返回角色列表如下：<br />
+            <ReactJson src={approveUser} collapsed={true} theme="monokai" />
           </span>
         </Form.Item>
         <Form.Item label="唯一标识">
@@ -67,16 +106,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="节点类型">
           <span className="ant-form-text">{nodeData.properties.type}(审批节点)</span>
         </Form.Item>
-        <Form.Item label="携带参数">
-          <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
-        </Form.Item>
-        <Form.Item label="下级节点">
-          <span className="ant-form-text">{nodeData.properties.next}</span>
-        </Form.Item>
-        <Form.Item label="下级类型">
-          <span className="ant-form-text">{nodeData.properties.nextType}</span>
-        </Form.Item>
-        <Form.Item label="角色获取" name="roleApi" initialValue={"http://www.api.com/api/roles"}>
+        <Form.Item label="角色获取" name="roleApi" initialValue={"/api/roles"} rules={[{ required: true, message: '请输入角色获取地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
           <Search
             placeholder="请输入获取角色列表地址"
             allowClear
@@ -84,13 +114,51 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
             size="large"
             onSearch={(e, v) => {
               console.log(e, v)
+              request({
+                method: "get",
+                url: e,
+              }).then((res: any) => {
+                console.log("res:", res);
+                if (res.data.status != 0) {
+                  messageApi.open({
+                    type: 'error',
+                    content: '加载角色信息失败，请核查接口返回信息是否符合标准',
+                    duration: 2,
+                    style: {
+                      marginTop: '20vh',
+                    },
+                  });
+                } else {
+                  messageApi.open({
+                    type: 'success',
+                    content: '加载角色信息成功',
+                    duration: 2,
+                    style: {
+                      marginTop: '20vh',
+                    },
+                  });
+                  setApproveUser(res.data)
+                }
+              }).catch((error: any) => {
+                console.log("error:", error);
+                messageApi.open({
+                  type: 'error',
+                  content: '加载角色信息失败，请核查地址是否正常',
+                  duration: 4,
+                  style: {
+                    marginTop: '20vh',
+                  },
+                });
+              });
             }}
           />
         </Form.Item>
-        <Form.Item label="审核节点类型" name="approveType" initialValue={nodeData.properties.action}>
-          <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
-            {approveUserOption}
+        <Form.Item label="审核节点类型" name="approveType" initialValue={nodeData.properties.action} rules={[{ required: true, message: '请选择审批角色' }]}>
+          <Select getPopupContainer={triggerNode => triggerNode.parentNode} notFoundContent={'请配置角色获取地址，并进行访问'} options={approveUser.data}>
           </Select>
+        </Form.Item>
+        <Form.Item label="携带参数">
+          <ReactJson src={nodeData.properties} theme="monokai" />
         </Form.Item>
       </Form>
 
@@ -116,10 +184,13 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
         </Form.Item>
         <Form.Item label="下级节点">
-          <span className="ant-form-text">{nodeData.properties.next}</span>
+          <span className="ant-form-text">{nodeData.properties.nextId}</span>
         </Form.Item>
         <Form.Item label="下级类型">
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
+        </Form.Item>
+        <Form.Item label="携带参数">
+          <ReactJson src={nodeData.properties} theme="monokai" />
         </Form.Item>
       </Form>
       ;
@@ -140,14 +211,11 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="唯一标识">
           <span className="ant-form-text">{nodeData.id}</span>
         </Form.Item>
-        <Form.Item label="携带参数">
-          <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
-        </Form.Item>
         <Form.Item label="上级节点">
-          <span className="ant-form-text">{nodeData.properties.pre}</span>
+          <span className="ant-form-text">{nodeData.properties.preId}</span>
         </Form.Item>
         <Form.Item label="下级节点">
-          <span className="ant-form-text">{nodeData.properties.next}</span>
+          <span className="ant-form-text">{nodeData.properties.nextId}</span>
         </Form.Item>
         <Form.Item label="下级类型">
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
@@ -170,14 +238,14 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
             ]}
           />
         </Form.Item>
-        {
-          actionType == "webhook" ?
-            <Form.Item name="webhook" label="webhook" >
-              <Input placeholder="http://www.api.com/api/notice"
-                value={nodeData.properties.webhook}
-              />
-            </Form.Item> : <div />
-        }
+        <Form.Item name="webhook" label="webhook" rules={[{ required: true, message: '请输入回调地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+          <Input placeholder="http://www.api.com/api/notice"
+            value={nodeData.properties.webhook}
+          />
+        </Form.Item>
+        <Form.Item label="携带参数">
+          <ReactJson src={nodeData.properties} theme="monokai" />
+        </Form.Item>
       </Form>;
     return result;
   }
@@ -196,14 +264,14 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <Form.Item label="唯一标识">
             <span className="ant-form-text">{nodeData.id}</span>
           </Form.Item>
-          <Form.Item label="携带参数">
-            <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
-          </Form.Item>
           <Form.Item label="上级节点">
-            <span className="ant-form-text">{nodeData.properties.pre}</span>
+            <span className="ant-form-text">{nodeData.properties.preId}</span>
           </Form.Item>
           <Form.Item label="伙伴节点">
             <span className="ant-form-text">{nodeData.properties.friend}</span>
+          </Form.Item>
+          <Form.Item label="携带参数">
+            <ReactJson src={nodeData.properties} theme="monokai" />
           </Form.Item>
         </Form>
       )
@@ -219,20 +287,20 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           <Form.Item label="唯一标识">
             <span className="ant-form-text">{nodeData.id}</span>
           </Form.Item>
-          <Form.Item label="携带参数">
-            <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
-          </Form.Item>
           <Form.Item label="上级节点">
-            <span className="ant-form-text">{nodeData.properties.pre}</span>
+            <span className="ant-form-text">{nodeData.properties.preId}</span>
           </Form.Item>
           <Form.Item label="下级节点">
-            <span className="ant-form-text">{nodeData.properties.next}</span>
+            <span className="ant-form-text">{nodeData.properties.nextId}</span>
           </Form.Item>
           <Form.Item label="下级类型">
             <span className="ant-form-text">{nodeData.properties.nextType}</span>
           </Form.Item>
           <Form.Item label="伙伴节点">
             <span className="ant-form-text">{nodeData.properties.friend}</span>
+          </Form.Item>
+          <Form.Item label="携带参数">
+            <ReactJson src={nodeData.properties} theme="monokai" />
           </Form.Item>
         </Form>
       )
@@ -254,17 +322,17 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
       <Form.Item label="节点类型">
         <span className="ant-form-text">{nodeData.properties.type}</span>
       </Form.Item>
-      <Form.Item label="携带参数">
-        <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
-      </Form.Item>
       <Form.Item label="上级节点">
-        <span className="ant-form-text">{nodeData.properties.pre}</span>
+        <span className="ant-form-text">{nodeData.properties.preId}</span>
       </Form.Item>
       <Form.Item label="下级节点">
-        <span className="ant-form-text">{nodeData.properties.next}</span>
+        <span className="ant-form-text">{nodeData.properties.nextId}</span>
       </Form.Item>
       <Form.Item label="下级类型">
         <span className="ant-form-text">{nodeData.properties.nextType}</span>
+      </Form.Item>
+      <Form.Item label="携带参数">
+        <ReactJson src={nodeData.properties} theme="monokai" />
       </Form.Item>
     </Form>
     return result;
@@ -284,6 +352,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         </Form.Item>
         <Form.Item label="节点类型">
           <span className="ant-form-text">{nodeData.properties.type}(结束节点)</span>
+        </Form.Item>
+        <Form.Item label="携带参数">
+          <ReactJson src={nodeData.properties} theme="monokai" />
         </Form.Item>
       </Form>
 
@@ -307,9 +378,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         </Form.Item>
         <Form.Item label="目的地标识">
           <span className="ant-form-text">{nodeData.targetNodeId}</span>
-        </Form.Item>
-        <Form.Item label="携带参数">
-          <span className="ant-form-text">{JSON.stringify(nodeData.properties)}</span>
         </Form.Item>
         {
           !nodeData.properties?.type ?
@@ -425,6 +493,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
               </div>)
         }
 
+        <Form.Item label="携带参数">
+          <ReactJson src={nodeData.properties} theme="monokai" />
+        </Form.Item>
       </Form>
       ;
 
@@ -484,6 +555,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           </Space>
         }
       >
+        {contextHolder}
         {nodeData.properties?.type === "start" ? getStart() : ''}
         {nodeData.type === "taskNode" ? getTaskNode() : ''}
         {nodeData.type === "parallelGateway" ? getParallelGatewayNode() : ''}

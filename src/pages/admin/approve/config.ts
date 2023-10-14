@@ -1,22 +1,3 @@
-export const approveUser = [
-  {
-    label: '直接上级',
-    value: 'leader'
-  },
-  {
-    label: 'T3领导',
-    value: 't3Leader'
-  },
-  {
-    label: 'T2领导',
-    value: 't2Leader'
-  },
-  {
-    label: 'T1领导',
-    value: 't1Leader'
-  },
-]
-
 // 主题
 export const themeApprove = {
   rect: { // 矩形样式
