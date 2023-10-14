@@ -37,8 +37,9 @@ export default function ApproveExample() {
   useEffect(() => {
     const lf = new LogicFlow({
       ...config,
-      container: document.querySelector('#graph') as HTMLElement
+      container: document.querySelector('#graph') as HTMLElement,
     });
+
     setLf(lf);
     RegisteNode(lf);
     lf.render(data);
@@ -53,16 +54,7 @@ export default function ApproveExample() {
 
   }, []);
 
-  lf.setTheme({
-    edgeText: {
-      textWidth: 100,
-      overflowMode: "autoWrap",
-      fontSize: 12,
-      background: {
-        fill: "#FFFFFF",
-      },
-    },
-  });
+
 
 
   const initPanel = (lf: LogicFlow) => {

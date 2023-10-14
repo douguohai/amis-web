@@ -16,8 +16,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
   const [approveUser, setApproveUser] = useState(JSON.parse("{\"status\":0,\"data\":[{\"label\":\"T3领导-系统填充\",\"value\":\"t3Leader\"},{\"label\":\"T2领导-系统填充\",\"value\":\"t2Leader\"},{\"label\":\"T1领导-系统填充\",\"value\":\"t1Leader\"}]}"));
 
-  let actionType = Form.useWatch('action', form);
-
   useEffect(() => {
     console.log(nodeData)
     if (nodeData != "") {
@@ -381,13 +379,13 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         </Form.Item>
         {
           !nodeData.properties?.type ?
-            <Form.Item label="文字描述" name="lineDesc" >
+            <Form.Item label="文字描述" name="lineDesc" rules={[{ max: 20, message: '最大长度20个字符' }]}>
               <Input style={{ width: 250 }} />
             </Form.Item>
             :
             nodeData.properties?.type && (
               nodeData.properties?.type == "custom" ? <div>
-                <Form.Item label="文字描述" name="lineDesc" >
+                <Form.Item label="文字描述" name="lineDesc" rules={[{ max: 20, message: '最大长度20个字符' }]} >
                   <Input style={{ width: 250 }} />
                 </Form.Item>
                 <Form.Item label="关系条件" name="action" initialValue={{ 'action': nodeData.properties.action }}>
@@ -468,7 +466,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                   </Form.List>
                 </Form.Item>
               </div> : <div>
-                <Form.Item label="文字描述" name="lineDesc" initialValue={"审批拒绝"} rules={[{ required: true, message: '请输入变量' }]}  >
+                <Form.Item label="文字描述" name="lineDesc" initialValue={"审批拒绝"} rules={[{ required: true, message: '请输入变量' }, { max: 20, message: '最大长度20个字符' }]} >
                   <Radio.Group
                     onChange={(e) => {
                       if (e.target.value == "审批通过") {
