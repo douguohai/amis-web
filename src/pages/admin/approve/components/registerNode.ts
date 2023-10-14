@@ -11,7 +11,12 @@ import LogicFlow, {
 } from '@logicflow/core';
 
 import GraphModel from "@logicflow/core/types/model/GraphModel";
-import { nodeProperty } from '../type';
+
+export type nodeProperty = {
+  labelColor: string,
+  approveTypeLabel: string,
+  approveType: string,
+}
 
 export default function RegisteNode(lf: LogicFlow) {
 

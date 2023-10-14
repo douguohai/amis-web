@@ -7,12 +7,11 @@ import { themeApprove, data } from './config';
 import "@logicflow/extension/lib/style/index.css";
 import "@logicflow/core/dist/style/index.css";
 import '@logicflow/extension/lib/style/index.css'
+import "@logicflow/core/dist/style/index.css";
 import { message } from 'antd';
+import "./index.css";
 
 // https://site.logic-flow.cn/docs/#/zh/guide/extension/adapter
-
-
-
 export default function ApproveExample() {
 
   const [lf, setLf] = useState({} as LogicFlow);
@@ -41,10 +40,12 @@ export default function ApproveExample() {
     });
 
     setLf(lf);
+    initControl(lf);
     RegisteNode(lf);
     lf.render(data);
     initEvent(lf);
-    initPanel(lf)
+    initPanel(lf);
+
 
     const handleResize = () => setHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
@@ -55,6 +56,19 @@ export default function ApproveExample() {
   }, []);
 
 
+
+  const initControl = (lf: LogicFlow) => {
+    lf.extension.control.addItem({
+      key: 'download-map',
+      iconClass: "custom-minimap",
+      title: "下载",
+      text: "下载",
+      onClick: (lf, ev) => {
+        const data = lf.getGraphData()
+        download("logic-flow-" + new Date().getTime() + ".json", JSON.stringify(data));
+      },
+    });
+  }
 
 
   const initPanel = (lf: LogicFlow) => {
@@ -272,3 +286,20 @@ export default function ApproveExample() {
     </div>
   )
 }
+
+/**
+ * 文件下载
+ * @param filename 下载文件名称 
+ * @param text  文件体
+ */
+function download(filename: string, text: string) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
