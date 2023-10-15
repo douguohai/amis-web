@@ -107,7 +107,7 @@ export default function ApproveExample() {
         }
       },
       {
-        type: 'finsh',
+        type: 'finish',
         text: '结束',
         label: '结束节点',
         icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAbdJREFUOE+11D9IG3EUB/DvuyS/0+pUdBD1rlA0p8YpcaopiKMuXRzq0lEHN3FVwc2pW1dBEUWd3BS76KSBoiFG24K51BZpcVFb88t5Ty71QvxLIncHxy3vffjd+733CD489JS536i2BhSOMpwXUSi0RUBC2rTbmc19fyz3QTRZj9pgtToN8JCTyAyLwJsgegMgdIMtWrYcjvzA6V38HnqgBbsZyjoAlYFJJtq2a3JrkRTkThSh2j9VcWb7LQHjACwQPhgZOVcK30LTuhgEYxbAchUFR15l/v567Be/aqL9CpgBECPY8bBpbbqxRTTZhJdBRZwA+GKYsqvc+0trYglAv/VP1kV+49zJK6JpTSwAGAgAHS2mTJWLHukvGi7Z+gnQJ8PMDRfRvWb1dYj4m1PDNlNOlAu6cfuamHBqzFcUbjvOHRZOeqCLd8xYASm9RuZyo1I0pat9CvOqwnjfmpXzBTStiykwxs7rZU0sgXylaLIdInAmLhTwx3A2P/ofbQ59dr5GNt9TKejGlxr+ndSXmvpy+4W6et2nDurLRN20lrez77aG51vKhT3fp6XN7+nmf+5UuXnXBMoMJVvY4G0AAAAASUVORK5CYII=',
@@ -145,6 +145,7 @@ export default function ApproveExample() {
       const targetNode = lf.graphModel.nodesMap[targetId];
       const preType = sourceNode.model.getProperties().type
       const preAction = sourceNode.model.getProperties().action
+      const targetAction = targetNode.model.getProperties().action
       if (["conditionGateWay", "approval"].indexOf(preType) < 0 && preAction != "parallelGateway-start") {
         lf.setProperties(sourceId, {
           nextId: targetId,
@@ -152,17 +153,29 @@ export default function ApproveExample() {
         });
       }
 
-      targetNode.model.setProperties(Object.assign(targetNode.model.properties, {
-        preId: sourceId,
-      }));
+      if (targetAction != "parallelGateway-end") {
+        targetNode.model.setProperties(Object.assign(targetNode.model.properties, {
+          preId: sourceId,
+        }));
+      }
 
       if (preType == "conditionGateWay" || preAction == "parallelGateway-start" || preType == "approval") {
+        const lineDesc = preType == "approval" ? "审批通过" : "满足条件"
         lf.setProperties(edgeId, {
           type: "approval" == preType ? "system" : "custom",  // 判断条件类型  custom(自定义) system(系统默认)
           nextType: targetNode.model.getProperties().type,
           nextId: targetId,
           preId: sourceId,
+          lineDesc: lineDesc,
+          action: "and",
+          inputs: [{
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "true"
+          }]
         });
+        lf.updateText(edgeId, lineDesc)
       }
     });
 
@@ -235,7 +248,7 @@ export default function ApproveExample() {
       if (nodeModel.type == "taskNode") {
         console.log(nodeModel)
         const currentNextId = nodeModel.getProperties().nextId;
-        if ("" != currentNextId && lf.getNodeDataById(currentNextId)?.type == "finsh") {
+        if ("" != currentNextId && lf.getNodeDataById(currentNextId)?.type == "finish") {
           lf.deleteEdgeByNodeId({
             sourceNodeId: id,
             targetNodeId: currentNextId,

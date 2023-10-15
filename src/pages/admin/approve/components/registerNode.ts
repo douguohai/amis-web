@@ -27,9 +27,10 @@ export default function RegisteNode(lf: LogicFlow) {
       super(data, graphModel);
       console.log(data)
       this.properties = {
-        next: '',
+        nextId: '',
         nextType: '',
         type: 'start',
+        ...data.properties,
       }
     }
 
@@ -125,6 +126,7 @@ export default function RegisteNode(lf: LogicFlow) {
         labelColor: '#000000',
         type: 'approval',
         roleApi: '/api/roles',
+        ...data.properties,
       }
     }
   }
@@ -148,6 +150,7 @@ export default function RegisteNode(lf: LogicFlow) {
       ];
       this.properties = {
         type: 'conditionGateWay',
+        ...data.properties,
       }
     }
   }
@@ -204,8 +207,8 @@ export default function RegisteNode(lf: LogicFlow) {
         [0, 20]
       ];
       this.properties = {
-        ...data.properties,
         type: 'parallelGateWay',
+        ...data.properties,
       }
     }
   }
@@ -222,7 +225,8 @@ export default function RegisteNode(lf: LogicFlow) {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
       this.properties = {
-        type: 'finsh',
+        type: 'finish',
+        ...data.properties,
       }
     }
 
@@ -264,7 +268,7 @@ export default function RegisteNode(lf: LogicFlow) {
 
 
   lf.register({
-    type: 'finsh',
+    type: 'finish',
     view: CircleNode,
     model: FinshNodeModel,
   })
@@ -327,9 +331,10 @@ export default function RegisteNode(lf: LogicFlow) {
         red: true,
         type: 'taskNode',
         action: 'apply',
-        webhook: ''
+        webhook: '',
+        ...data.properties,
       }
-      this.text.value = "apply"
+      this.text.value = data.properties.action == "" ? "apply" : this.properties.action
     }
 
     setAttributes() {

@@ -22,448 +22,974 @@ export const themeApprove = {
 }
 
 export const data = {
-  "nodes": [{
-    "id": "9ca20bef-31d9-44d0-99b6-66c524b60c00",
-    "type": "start",
-    "x": 60,
-    "y": 150,
-    "properties": {
-      "next": "",
-      "nextType": "",
-      "type": "start"
+  "nodes": [
+    {
+      "id": "6ba9c59c-2b33-42b6-a91c-1243a9240178",
+      "type": "start",
+      "x": -130,
+      "y": 250,
+      "properties": {
+        "nextId": "47b255a7-1334-4a27-81f4-943640477d54",
+        "nextType": "taskNode",
+        "type": "start",
+        "next": ""
+      },
+      "text": {
+        "x": -130,
+        "y": 250,
+        "value": "开始"
+      }
     },
-    "text": {
-      "x": 60,
-      "y": 150,
-      "value": "开始"
-    }
-  }, {
-    "id": "64369d6e-d0f0-4253-85b2-c4d760138c7a",
-    "type": "finsh",
-    "x": 1390,
-    "y": 170,
-    "properties": {
-      "type": "finsh"
+    {
+      "id": "47b255a7-1334-4a27-81f4-943640477d54",
+      "type": "taskNode",
+      "x": 140,
+      "y": 250,
+      "properties": {
+        "red": true,
+        "type": "taskNode",
+        "action": "apply",
+        "webhook": "https://www.baidu.com",
+        "preId": "6ba9c59c-2b33-42b6-a91c-1243a9240178",
+        "nextId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+        "nextType": "conditionGateWay"
+      },
+      "text": {
+        "x": 140,
+        "y": 250,
+        "value": "apply"
+      }
     },
-    "text": {
+    {
+      "id": "193e2ebe-306e-43b8-8655-6804e9db6011",
+      "type": "conditionGateWay",
+      "x": 290,
+      "y": 250,
+      "properties": {
+        "type": "conditionGateWay",
+        "preId": "47b255a7-1334-4a27-81f4-943640477d54",
+        "conditions": [
+          {
+            "type": "custom",
+            "nextType": "taskNode",
+            "nextId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
+            "preId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+            "action": "and",
+            "inputs": [
+              {
+                "inputType": "bool",
+                "action": "eq",
+                "inputFlag": "accept",
+                "inputValue": "true"
+              }
+            ]
+          },
+          {
+            "type": "custom",
+            "nextType": "parallelGateWay",
+            "nextId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+            "preId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+            "action": "and",
+            "inputs": [
+              {
+                "inputType": "bool",
+                "action": "eq",
+                "inputFlag": "accept",
+                "inputValue": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "text": {
+        "x": 290,
+        "y": 250,
+        "value": "条件网关"
+      }
+    },
+    {
+      "id": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
+      "type": "taskNode",
+      "x": 550,
+      "y": 170,
+      "properties": {
+        "red": true,
+        "type": "taskNode",
+        "action": "webhook",
+        "webhook": "https://www.baidu.com",
+        "preId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+        "nextId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+        "nextType": "approval"
+      },
+      "text": {
+        "x": 550,
+        "y": 170,
+        "value": "webhook"
+      }
+    },
+    {
+      "id": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+      "type": "parallelGateway",
+      "x": 540,
+      "y": 350,
+      "properties": {
+        "type": "parallelGateWay",
+        "action": "parallelGateway-start",
+        "friend": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+        "preId": "193e2ebe-306e-43b8-8655-6804e9db6011"
+      },
+      "text": {
+        "x": 540,
+        "y": 350,
+        "value": "并行开始"
+      }
+    },
+    {
+      "id": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+      "type": "parallelGateway",
+      "x": 960,
+      "y": 340,
+      "properties": {
+        "type": "parallelGateWay",
+        "action": "parallelGateway-end",
+        "friend": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+        "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
+        "nextType": "taskNode"
+      },
+      "text": {
+        "x": 960,
+        "y": 340,
+        "value": "并行结束"
+      }
+    },
+    {
+      "id": "78031669-b12c-4770-81d8-5b8b19380995",
+      "type": "taskNode",
+      "x": 750,
+      "y": 300,
+      "properties": {
+        "red": true,
+        "type": "taskNode",
+        "action": "webhook",
+        "webhook": "https://www.baidu.com",
+        "preId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+        "nextId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+        "nextType": "parallelGateWay"
+      },
+      "text": {
+        "x": 750,
+        "y": 300,
+        "value": "webhook"
+      }
+    },
+    {
+      "id": "3ac5b29d-2b64-49cf-b933-e2f83aee8dd5",
+      "type": "taskNode",
+      "x": 750,
+      "y": 450,
+      "properties": {
+        "red": true,
+        "type": "taskNode",
+        "action": "webhook",
+        "webhook": "https://www.baidu.com",
+        "preId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+        "nextId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+        "nextType": "parallelGateWay"
+      },
+      "text": {
+        "x": 750,
+        "y": 450,
+        "value": "webhook"
+      }
+    },
+    {
+      "id": "16bc45d3-523e-4720-9df1-544618f74a98",
+      "type": "taskNode",
       "x": 1390,
-      "y": 170,
-      "value": "结束"
-    }
-  }, {
-    "id": "ef2684c4-dd74-4b35-a993-147dbce304a5",
-    "type": "taskNode",
-    "x": 240,
-    "y": 150,
-    "properties": {
-      "red": true,
-      "type": "taskNode",
-      "action": "apply",
-      "webhook": ""
+      "y": 250,
+      "properties": {
+        "red": true,
+        "type": "taskNode",
+        "action": "finish",
+        "webhook": "https://www.baidu.com",
+        "preId": "cac1933c-da50-4a67-a852-981bfe517845",
+        "nextId": "93321011-3b72-456e-81e6-c20aa9f087cc",
+        "nextType": "finish"
+      },
+      "text": {
+        "x": 1390,
+        "y": 250,
+        "value": "finish"
+      }
     },
-    "text": {
-      "x": 240,
-      "y": 150,
-      "value": "apply"
-    }
-  }, {
-    "id": "573b0efc-1756-4fad-853e-1c3796d8969b",
-    "type": "conditionGateWay",
-    "x": 410,
-    "y": 150,
-    "properties": {
-      "type": "conditionGateWay"
-    },
-    "text": {
-      "x": 410,
-      "y": 150,
-      "value": "条件网关"
-    }
-  }, {
-    "id": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-    "type": "approver",
-    "x": 650,
-    "y": 70,
-    "properties": {
-      "labelColor": "#000000",
-      "type": "approval",
-      "roleApi": "/api/roles"
-    },
-    "text": {
-      "x": 650,
-      "y": 70,
-      "value": "审批节点"
-    }
-  }, {
-    "id": "064ee8ca-2481-4263-b31d-e662e559f50d",
-    "type": "taskNode",
-    "x": 910,
-    "y": 10,
-    "properties": {
-      "red": true,
-      "type": "taskNode",
-      "action": "apply",
-      "webhook": ""
-    },
-    "text": {
-      "x": 910,
-      "y": 10,
-      "value": "apply"
-    }
-  }, {
-    "id": "9d1d389f-af47-46be-ad16-95074e57fc20",
-    "type": "taskNode",
-    "x": 940,
-    "y": 170,
-    "properties": {
-      "red": true,
-      "type": "taskNode",
-      "action": "apply",
-      "webhook": ""
-    },
-    "text": {
-      "x": 940,
-      "y": 170,
-      "value": "apply"
-    }
-  }, {
-    "id": "0b041ff7-1b54-4177-a8fa-1f0f8e1b9761",
-    "type": "taskNode",
-    "x": 1210,
-    "y": 170,
-    "properties": {
-      "red": true,
-      "type": "taskNode",
-      "action": "apply",
-      "webhook": ""
-    },
-    "text": {
-      "x": 1210,
-      "y": 170,
-      "value": "apply"
-    }
-  }, {
-    "id": "29cc5967-9bde-4280-956d-9940a4e3ca20",
-    "type": "taskNode",
-    "x": 700,
-    "y": 310,
-    "properties": {
-      "red": true,
-      "type": "taskNode",
-      "action": "webhook",
-      "webhook": "https://www.baidu.com"
-    },
-    "text": {
-      "x": 700,
-      "y": 310,
-      "value": "webhook"
-    }
-  }],
-  "edges": [{
-    "id": "3b90dba0-f57f-4182-aaff-07204df0ae6c",
-    "type": "polyline",
-    "sourceNodeId": "9ca20bef-31d9-44d0-99b6-66c524b60c00",
-    "targetNodeId": "ef2684c4-dd74-4b35-a993-147dbce304a5",
-    "startPoint": {
-      "x": 110,
-      "y": 150
-    },
-    "endPoint": {
-      "x": 190,
-      "y": 150
-    },
-    "properties": {},
-    "pointsList": [{
-      "x": 110,
-      "y": 150
-    }, {
-      "x": 190,
-      "y": 150
-    }]
-  }, {
-    "id": "6c5328db-d597-4828-bf74-20cd678d1de0",
-    "type": "polyline",
-    "sourceNodeId": "ef2684c4-dd74-4b35-a993-147dbce304a5",
-    "targetNodeId": "573b0efc-1756-4fad-853e-1c3796d8969b",
-    "startPoint": {
-      "x": 290,
-      "y": 150
-    },
-    "endPoint": {
-      "x": 375,
-      "y": 150
-    },
-    "properties": {},
-    "pointsList": [{
-      "x": 290,
-      "y": 150
-    }, {
-      "x": 375,
-      "y": 150
-    }]
-  }, {
-    "id": "97f5548a-15d2-4d06-99de-7e4c46ff08fd",
-    "type": "polyline",
-    "sourceNodeId": "573b0efc-1756-4fad-853e-1c3796d8969b",
-    "targetNodeId": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-    "startPoint": {
-      "x": 418,
-      "y": 123
-    },
-    "endPoint": {
-      "x": 600,
-      "y": 68
-    },
-    "properties": {
-      "type": "custom",
-      "nextType": "approval",
-      "nextId": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-      "preId": "573b0efc-1756-4fad-853e-1c3796d8969b",
-      "lineDesc": "人员年满18周岁",
-      "action": "or",
-      "inputs": [{
-        "inputType": "float64",
-        "action": "eq",
-        "inputFlag": "age",
-        "inputValue": "18"
-      }, {
-        "inputType": "float64",
-        "action": "gt",
-        "inputFlag": "age",
-        "inputValue": "18"
-      }]
-    },
-    "text": {
-      "x": 509,
-      "y": 68,
-      "value": "人员年满18周岁"
-    },
-    "pointsList": [{
-      "x": 418,
-      "y": 123
-    }, {
-      "x": 418,
-      "y": 68
-    }, {
-      "x": 600,
-      "y": 68
-    }]
-  }, {
-    "id": "a0758b99-a600-4281-ac01-35a44db7b464",
-    "type": "polyline",
-    "sourceNodeId": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-    "targetNodeId": "064ee8ca-2481-4263-b31d-e662e559f50d",
-    "startPoint": {
-      "x": 650,
-      "y": 30
-    },
-    "endPoint": {
-      "x": 860,
-      "y": 10
-    },
-    "properties": {
-      "type": "system",
-      "nextType": "taskNode",
-      "nextId": "064ee8ca-2481-4263-b31d-e662e559f50d",
-      "preId": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-      "lineDesc": "审批通过",
-      "action": "and",
-      "inputs": [{
-        "inputType": "bool",
-        "action": "eq",
-        "inputFlag": "accept",
-        "inputValue": "true"
-      }]
-    },
-    "text": {
-      "x": 740,
-      "y": 10,
-      "value": "审批通过"
-    },
-    "pointsList": [{
-      "x": 650,
-      "y": 30
-    }, {
-      "x": 650,
-      "y": 10
-    }, {
-      "x": 860,
-      "y": 10
-    }]
-  }, {
-    "id": "7546eeb7-cd70-439a-a7ee-21f7d49c5013",
-    "type": "polyline",
-    "sourceNodeId": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-    "targetNodeId": "9d1d389f-af47-46be-ad16-95074e57fc20",
-    "startPoint": {
-      "x": 650,
-      "y": 110
-    },
-    "endPoint": {
-      "x": 890,
-      "y": 170
-    },
-    "properties": {
-      "type": "system",
-      "nextType": "taskNode",
-      "nextId": "9d1d389f-af47-46be-ad16-95074e57fc20",
-      "preId": "8645ba1d-16f1-4ae2-99a6-6149ba38627b",
-      "lineDesc": "审批拒绝",
-      "action": "and",
-      "inputs": [{
-        "inputType": "bool",
-        "action": "eq",
-        "inputFlag": "accept",
-        "inputValue": "false"
-      }]
-    },
-    "text": {
+    {
+      "id": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+      "type": "approver",
       "x": 770,
       "y": 170,
-      "value": "审批拒绝"
+      "properties": {
+        "labelColor": "#000000",
+        "type": "approval",
+        "roleApi": "/api/roles",
+        "preId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
+        "approveType": "t1Leader",
+        "conditions": [
+          {
+            "type": "system",
+            "nextType": "approval",
+            "nextId": "cac1933c-da50-4a67-a852-981bfe517845",
+            "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+            "action": "and",
+            "inputs": [
+              {
+                "inputType": "bool",
+                "action": "eq",
+                "inputFlag": "accept",
+                "inputValue": "true"
+              }
+            ]
+          },
+          {
+            "type": "system",
+            "nextType": "taskNode",
+            "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
+            "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+            "action": "and",
+            "inputs": [
+              {
+                "inputType": "bool",
+                "action": "eq",
+                "inputFlag": "accept",
+                "inputValue": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "text": {
+        "x": 770,
+        "y": 170,
+        "value": "审批节点"
+      }
     },
-    "pointsList": [{
-      "x": 650,
-      "y": 110
-    }, {
-      "x": 650,
-      "y": 170
-    }, {
-      "x": 890,
-      "y": 170
-    }]
-  }, {
-    "id": "a7229d2a-a6d2-4067-a782-c92769b2927d",
-    "type": "polyline",
-    "sourceNodeId": "064ee8ca-2481-4263-b31d-e662e559f50d",
-    "targetNodeId": "0b041ff7-1b54-4177-a8fa-1f0f8e1b9761",
-    "startPoint": {
-      "x": 960,
-      "y": 10
+    {
+      "id": "cac1933c-da50-4a67-a852-981bfe517845",
+      "type": "approver",
+      "x": 970,
+      "y": 170,
+      "properties": {
+        "labelColor": "#000000",
+        "type": "approval",
+        "roleApi": "/api/roles",
+        "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+        "conditions": [
+          {
+            "type": "system",
+            "nextType": "taskNode",
+            "nextId": "7d94c065-ef94-4791-b906-0badf4fa158a",
+            "preId": "cac1933c-da50-4a67-a852-981bfe517845",
+            "action": "and",
+            "inputs": [
+              {
+                "inputType": "bool",
+                "action": "eq",
+                "inputFlag": "accept",
+                "inputValue": "true"
+              }
+            ]
+          },
+          {
+            "type": "system",
+            "nextType": "taskNode",
+            "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
+            "preId": "cac1933c-da50-4a67-a852-981bfe517845",
+            "action": "and",
+            "inputs": [
+              {
+                "inputType": "bool",
+                "action": "eq",
+                "inputFlag": "accept",
+                "inputValue": "false"
+              }
+            ]
+          }
+        ],
+        "approveType": "t2Leader"
+      },
+      "text": {
+        "x": 970,
+        "y": 170,
+        "value": "审批节点"
+      }
     },
-    "endPoint": {
-      "x": 1210,
-      "y": 130
+    {
+      "id": "7d94c065-ef94-4791-b906-0badf4fa158a",
+      "type": "taskNode",
+      "x": 1170,
+      "y": 170,
+      "properties": {
+        "red": true,
+        "type": "taskNode",
+        "action": "webhook",
+        "webhook": "https://www.baidu.com",
+        "preId": "cac1933c-da50-4a67-a852-981bfe517845",
+        "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
+        "nextType": "taskNode"
+      },
+      "text": {
+        "x": 1170,
+        "y": 170,
+        "value": "webhook"
+      }
     },
-    "properties": {},
-    "pointsList": [{
-      "x": 960,
-      "y": 10
-    }, {
-      "x": 1210,
-      "y": 10
-    }, {
-      "x": 1210,
-      "y": 130
-    }]
-  }, {
-    "id": "28713793-4150-4cbe-ba41-35542113c7e0",
-    "type": "polyline",
-    "sourceNodeId": "0b041ff7-1b54-4177-a8fa-1f0f8e1b9761",
-    "targetNodeId": "64369d6e-d0f0-4253-85b2-c4d760138c7a",
-    "startPoint": {
-      "x": 1260,
-      "y": 170
+    {
+      "id": "93321011-3b72-456e-81e6-c20aa9f087cc",
+      "type": "finish",
+      "x": 1590,
+      "y": 250,
+      "properties": {
+        "type": "finish",
+        "preId": "16bc45d3-523e-4720-9df1-544618f74a98"
+      },
+      "text": {
+        "x": 1590,
+        "y": 250,
+        "value": "结束"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e70522ee-80a0-492e-a813-e5b011f1128e",
+      "type": "polyline",
+      "sourceNodeId": "6ba9c59c-2b33-42b6-a91c-1243a9240178",
+      "targetNodeId": "47b255a7-1334-4a27-81f4-943640477d54",
+      "startPoint": {
+        "x": -80,
+        "y": 250
+      },
+      "endPoint": {
+        "x": 90,
+        "y": 250
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": -80,
+          "y": 250
+        },
+        {
+          "x": 90,
+          "y": 250
+        }
+      ]
     },
-    "endPoint": {
-      "x": 1340,
-      "y": 170
+    {
+      "id": "fa058276-6b27-4cad-90c8-8f6628916a29",
+      "type": "polyline",
+      "sourceNodeId": "47b255a7-1334-4a27-81f4-943640477d54",
+      "targetNodeId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+      "startPoint": {
+        "x": 190,
+        "y": 250
+      },
+      "endPoint": {
+        "x": 255,
+        "y": 250
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 190,
+          "y": 250
+        },
+        {
+          "x": 255,
+          "y": 250
+        }
+      ]
     },
-    "properties": {},
-    "pointsList": [{
-      "x": 1260,
-      "y": 170
-    }, {
-      "x": 1340,
-      "y": 170
-    }]
-  }, {
-    "id": "3c38bbfb-2ff8-4f87-90ef-441e9a80cd93",
-    "type": "polyline",
-    "sourceNodeId": "573b0efc-1756-4fad-853e-1c3796d8969b",
-    "targetNodeId": "29cc5967-9bde-4280-956d-9940a4e3ca20",
-    "startPoint": {
-      "x": 410,
-      "y": 185
+    {
+      "id": "1c6526c2-2c9d-46c3-85c3-c06a1e080492",
+      "type": "polyline",
+      "sourceNodeId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+      "targetNodeId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
+      "startPoint": {
+        "x": 325,
+        "y": 250
+      },
+      "endPoint": {
+        "x": 500,
+        "y": 170
+      },
+      "properties": {
+        "type": "custom",
+        "nextType": "taskNode",
+        "nextId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
+        "preId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+        "lineDesc": "满足条件",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "true"
+          }
+        ]
+      },
+      "text": {
+        "x": 437.5,
+        "y": 170,
+        "value": "满足条件"
+      },
+      "pointsList": [
+        {
+          "x": 325,
+          "y": 250
+        },
+        {
+          "x": 355,
+          "y": 250
+        },
+        {
+          "x": 355,
+          "y": 170
+        },
+        {
+          "x": 500,
+          "y": 170
+        }
+      ]
     },
-    "endPoint": {
-      "x": 650,
-      "y": 310
+    {
+      "id": "4f72fec5-a9a8-4e89-a3ac-36b69c1b84f8",
+      "type": "polyline",
+      "sourceNodeId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+      "targetNodeId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+      "startPoint": {
+        "x": 290,
+        "y": 285
+      },
+      "endPoint": {
+        "x": 500,
+        "y": 372.5
+      },
+      "properties": {
+        "type": "custom",
+        "nextType": "parallelGateWay",
+        "nextId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+        "preId": "193e2ebe-306e-43b8-8655-6804e9db6011",
+        "lineDesc": "不满足条件",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "false"
+          }
+        ]
+      },
+      "text": {
+        "x": 395,
+        "y": 372.5,
+        "value": "不满足条件"
+      },
+      "pointsList": [
+        {
+          "x": 290,
+          "y": 285
+        },
+        {
+          "x": 290,
+          "y": 372.5
+        },
+        {
+          "x": 500,
+          "y": 372.5
+        }
+      ]
     },
-    "properties": {
-      "type": "custom",
-      "nextType": "taskNode",
-      "nextId": "29cc5967-9bde-4280-956d-9940a4e3ca20",
-      "preId": "573b0efc-1756-4fad-853e-1c3796d8969b",
-      "lineDesc": "未满18周岁",
-      "action": "or",
-      "inputs": [{
-        "inputType": "float64",
-        "action": "lt",
-        "inputFlag": "age",
-        "inputValue": "18"
-      }]
+    {
+      "id": "8666ea28-dd25-41a2-961d-e6a6c395d2b4",
+      "type": "polyline",
+      "sourceNodeId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+      "targetNodeId": "78031669-b12c-4770-81d8-5b8b19380995",
+      "startPoint": {
+        "x": 580,
+        "y": 332.5
+      },
+      "endPoint": {
+        "x": 700,
+        "y": 300
+      },
+      "properties": {
+        "type": "custom",
+        "nextType": "taskNode",
+        "nextId": "78031669-b12c-4770-81d8-5b8b19380995",
+        "preId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+        "lineDesc": "满足条件",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "true"
+          }
+        ]
+      },
+      "text": {
+        "x": 607.5,
+        "y": 332.5,
+        "value": "满足条件"
+      },
+      "pointsList": [
+        {
+          "x": 580,
+          "y": 332.5
+        },
+        {
+          "x": 640,
+          "y": 332.5
+        },
+        {
+          "x": 640,
+          "y": 300
+        },
+        {
+          "x": 700,
+          "y": 300
+        }
+      ]
     },
-    "text": {
-      "x": 410,
-      "y": 310,
-      "value": "未满18周岁"
+    {
+      "id": "8ff0188e-417d-4a07-bf76-8ec64fc4689c",
+      "type": "polyline",
+      "sourceNodeId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+      "targetNodeId": "3ac5b29d-2b64-49cf-b933-e2f83aee8dd5",
+      "startPoint": {
+        "x": 580,
+        "y": 372.5
+      },
+      "endPoint": {
+        "x": 700,
+        "y": 450
+      },
+      "properties": {
+        "type": "custom",
+        "nextType": "taskNode",
+        "nextId": "3ac5b29d-2b64-49cf-b933-e2f83aee8dd5",
+        "preId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
+        "lineDesc": "满足条件",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "true"
+          }
+        ]
+      },
+      "text": {
+        "x": 670,
+        "y": 411.25,
+        "value": "满足条件"
+      },
+      "pointsList": [
+        {
+          "x": 580,
+          "y": 372.5
+        },
+        {
+          "x": 670,
+          "y": 372.5
+        },
+        {
+          "x": 670,
+          "y": 450
+        },
+        {
+          "x": 700,
+          "y": 450
+        }
+      ]
     },
-    "pointsList": [{
-      "x": 410,
-      "y": 185
-    }, {
-      "x": 410,
-      "y": 310
-    }, {
-      "x": 650,
-      "y": 310
-    }]
-  }, {
-    "id": "46ac67e1-ce9f-435f-ba6a-77dab19c1233",
-    "type": "polyline",
-    "sourceNodeId": "29cc5967-9bde-4280-956d-9940a4e3ca20",
-    "targetNodeId": "0b041ff7-1b54-4177-a8fa-1f0f8e1b9761",
-    "startPoint": {
-      "x": 750,
-      "y": 310
+    {
+      "id": "96dc6048-8835-453a-b909-bbde0ed4bd54",
+      "type": "polyline",
+      "sourceNodeId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
+      "targetNodeId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+      "startPoint": {
+        "x": 600,
+        "y": 170
+      },
+      "endPoint": {
+        "x": 720,
+        "y": 170
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 600,
+          "y": 170
+        },
+        {
+          "x": 720,
+          "y": 170
+        }
+      ]
     },
-    "endPoint": {
-      "x": 1210,
-      "y": 210
+    {
+      "id": "35f2c834-015d-4f32-9dc4-5f5e243f24a8",
+      "type": "polyline",
+      "sourceNodeId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+      "targetNodeId": "cac1933c-da50-4a67-a852-981bfe517845",
+      "startPoint": {
+        "x": 820,
+        "y": 170
+      },
+      "endPoint": {
+        "x": 920,
+        "y": 170
+      },
+      "properties": {
+        "type": "system",
+        "nextType": "approval",
+        "nextId": "cac1933c-da50-4a67-a852-981bfe517845",
+        "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+        "lineDesc": "审批通过",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "true"
+          }
+        ]
+      },
+      "text": {
+        "x": 870,
+        "y": 170,
+        "value": "审批通过"
+      },
+      "pointsList": [
+        {
+          "x": 820,
+          "y": 170
+        },
+        {
+          "x": 920,
+          "y": 170
+        }
+      ]
     },
-    "properties": {},
-    "pointsList": [{
-      "x": 750,
-      "y": 310
-    }, {
-      "x": 1210,
-      "y": 310
-    }, {
-      "x": 1210,
-      "y": 210
-    }]
-  }, {
-    "id": "50adab15-26df-4d7b-ac69-2f9bf3fc38a3",
-    "type": "polyline",
-    "sourceNodeId": "9d1d389f-af47-46be-ad16-95074e57fc20",
-    "targetNodeId": "0b041ff7-1b54-4177-a8fa-1f0f8e1b9761",
-    "startPoint": {
-      "x": 990,
-      "y": 170
+    {
+      "id": "6307b349-55d9-4d72-ab4a-57fb1f28d085",
+      "type": "polyline",
+      "sourceNodeId": "cac1933c-da50-4a67-a852-981bfe517845",
+      "targetNodeId": "7d94c065-ef94-4791-b906-0badf4fa158a",
+      "startPoint": {
+        "x": 1020,
+        "y": 170
+      },
+      "endPoint": {
+        "x": 1120,
+        "y": 170
+      },
+      "properties": {
+        "type": "system",
+        "nextType": "taskNode",
+        "nextId": "7d94c065-ef94-4791-b906-0badf4fa158a",
+        "preId": "cac1933c-da50-4a67-a852-981bfe517845",
+        "lineDesc": "审批通过",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "true"
+          }
+        ]
+      },
+      "text": {
+        "x": 1060,
+        "y": 170,
+        "value": "审批通过"
+      },
+      "pointsList": [
+        {
+          "x": 1020,
+          "y": 170
+        },
+        {
+          "x": 1120,
+          "y": 170
+        }
+      ]
     },
-    "endPoint": {
-      "x": 1160,
-      "y": 170
+    {
+      "id": "3e725dfa-2d60-426b-88b2-b21b4f3ec8ea",
+      "type": "polyline",
+      "sourceNodeId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+      "targetNodeId": "16bc45d3-523e-4720-9df1-544618f74a98",
+      "startPoint": {
+        "x": 1000,
+        "y": 322.5
+      },
+      "endPoint": {
+        "x": 1390,
+        "y": 290
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 1000,
+          "y": 322.5
+        },
+        {
+          "x": 1390,
+          "y": 322.5
+        },
+        {
+          "x": 1390,
+          "y": 290
+        }
+      ]
     },
-    "properties": {},
-    "pointsList": [{
-      "x": 990,
-      "y": 170
-    }, {
-      "x": 1160,
-      "y": 170
-    }]
-  }]
+    {
+      "id": "c04d14c0-25f1-4888-b8ad-dbdf6c750ecf",
+      "type": "polyline",
+      "sourceNodeId": "7d94c065-ef94-4791-b906-0badf4fa158a",
+      "targetNodeId": "16bc45d3-523e-4720-9df1-544618f74a98",
+      "startPoint": {
+        "x": 1220,
+        "y": 170
+      },
+      "endPoint": {
+        "x": 1340,
+        "y": 250
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 1220,
+          "y": 170
+        },
+        {
+          "x": 1310,
+          "y": 170
+        },
+        {
+          "x": 1310,
+          "y": 250
+        },
+        {
+          "x": 1340,
+          "y": 250
+        }
+      ]
+    },
+    {
+      "id": "7ea16237-92c9-4b79-889c-c02f895e86ea",
+      "type": "polyline",
+      "sourceNodeId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+      "targetNodeId": "16bc45d3-523e-4720-9df1-544618f74a98",
+      "startPoint": {
+        "x": 770,
+        "y": 130
+      },
+      "endPoint": {
+        "x": 1390,
+        "y": 210
+      },
+      "properties": {
+        "type": "system",
+        "nextType": "taskNode",
+        "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
+        "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
+        "lineDesc": "审批拒绝",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "false"
+          }
+        ]
+      },
+      "text": {
+        "x": 1080,
+        "y": 38,
+        "value": "审批拒绝"
+      },
+      "pointsList": [
+        {
+          "x": 770,
+          "y": 130
+        },
+        {
+          "x": 770,
+          "y": 38
+        },
+        {
+          "x": 1390,
+          "y": 38
+        },
+        {
+          "x": 1390,
+          "y": 210
+        }
+      ]
+    },
+    {
+      "id": "ffab1268-09ff-4245-a104-d9157f03cbdf",
+      "type": "polyline",
+      "sourceNodeId": "cac1933c-da50-4a67-a852-981bfe517845",
+      "targetNodeId": "16bc45d3-523e-4720-9df1-544618f74a98",
+      "startPoint": {
+        "x": 970,
+        "y": 130
+      },
+      "endPoint": {
+        "x": 1390,
+        "y": 210
+      },
+      "properties": {
+        "type": "system",
+        "nextType": "taskNode",
+        "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
+        "preId": "cac1933c-da50-4a67-a852-981bfe517845",
+        "lineDesc": "审批拒绝",
+        "action": "and",
+        "inputs": [
+          {
+            "inputType": "bool",
+            "action": "eq",
+            "inputFlag": "accept",
+            "inputValue": "false"
+          }
+        ]
+      },
+      "text": {
+        "x": 1180,
+        "y": 100,
+        "value": "审批拒绝"
+      },
+      "pointsList": [
+        {
+          "x": 970,
+          "y": 130
+        },
+        {
+          "x": 970,
+          "y": 100
+        },
+        {
+          "x": 1390,
+          "y": 100
+        },
+        {
+          "x": 1390,
+          "y": 210
+        }
+      ]
+    },
+    {
+      "id": "619bae8b-c079-45ec-941a-24de004de402",
+      "type": "polyline",
+      "sourceNodeId": "16bc45d3-523e-4720-9df1-544618f74a98",
+      "targetNodeId": "93321011-3b72-456e-81e6-c20aa9f087cc",
+      "startPoint": {
+        "x": 1440,
+        "y": 250
+      },
+      "endPoint": {
+        "x": 1540,
+        "y": 250
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 1440,
+          "y": 250
+        },
+        {
+          "x": 1540,
+          "y": 250
+        }
+      ]
+    },
+    {
+      "id": "01946e05-a394-476c-aa54-b96c6a8a8c35",
+      "type": "polyline",
+      "sourceNodeId": "3ac5b29d-2b64-49cf-b933-e2f83aee8dd5",
+      "targetNodeId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+      "startPoint": {
+        "x": 800,
+        "y": 450
+      },
+      "endPoint": {
+        "x": 920,
+        "y": 362.5
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 800,
+          "y": 450
+        },
+        {
+          "x": 890,
+          "y": 450
+        },
+        {
+          "x": 890,
+          "y": 362.5
+        },
+        {
+          "x": 920,
+          "y": 362.5
+        }
+      ]
+    },
+    {
+      "id": "d53c5f5d-3dd3-4f7e-a1cd-9698622911ac",
+      "type": "polyline",
+      "sourceNodeId": "78031669-b12c-4770-81d8-5b8b19380995",
+      "targetNodeId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
+      "startPoint": {
+        "x": 800,
+        "y": 300
+      },
+      "endPoint": {
+        "x": 920,
+        "y": 322.5
+      },
+      "properties": {},
+      "pointsList": [
+        {
+          "x": 800,
+          "y": 300
+        },
+        {
+          "x": 860,
+          "y": 300
+        },
+        {
+          "x": 860,
+          "y": 322.5
+        },
+        {
+          "x": 920,
+          "y": 322.5
+        }
+      ]
+    }
+  ]
 }
-

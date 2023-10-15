@@ -204,7 +204,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         wrapperCol={{ span: 20 }}
       >
         <Form.Item label="解释">
-          <span className="ant-form-text"> 业务节点，三种类型设定， apply(发起审批类型) ｜ webhook(系统服务类型) |  finished (审批结束类型)</span>
+          <span className="ant-form-text"> 业务节点，三种类型设定， apply(发起审批类型) ｜ webhook(系统服务类型) |  finish (审批结束类型)</span>
         </Form.Item>
         <Form.Item label="唯一标识">
           <span className="ant-form-text">{nodeData.id}</span>
@@ -322,12 +322,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
       </Form.Item>
       <Form.Item label="上级节点">
         <span className="ant-form-text">{nodeData.properties.preId}</span>
-      </Form.Item>
-      <Form.Item label="下级节点">
-        <span className="ant-form-text">{nodeData.properties.nextId}</span>
-      </Form.Item>
-      <Form.Item label="下级类型">
-        <span className="ant-form-text">{nodeData.properties.nextType}</span>
       </Form.Item>
       <Form.Item label="携带参数">
         <ReactJson src={nodeData.properties} theme="monokai" />
@@ -559,7 +553,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         {nodeData.type === "parallelGateway" ? getParallelGatewayNode() : ''}
         {nodeData.type === "conditionGateWay" ? getConditionGateWayNode() : ''}
         {nodeData.type === "approver" ? getApproveList() : ''}
-        {nodeData.type === "finsh" ? getFinshNode() : ''}
+        {nodeData.type === "finish" ? getFinshNode() : ''}
         {nodeData.type === "polyline" ? getPolylineNode() : ''}
       </Drawer>
   )
