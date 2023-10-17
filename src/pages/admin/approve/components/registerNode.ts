@@ -11,6 +11,7 @@ import LogicFlow, {
 } from '@logicflow/core';
 
 import GraphModel from "@logicflow/core/types/model/GraphModel";
+import { code } from '../config'
 
 export type nodeProperty = {
   labelColor: string,
@@ -29,7 +30,7 @@ export default function RegisteNode(lf: LogicFlow) {
       this.properties = {
         nextId: '',
         nextType: '',
-        type: 'start',
+        type: code.START,
         ...data.properties,
       }
     }
@@ -58,7 +59,7 @@ export default function RegisteNode(lf: LogicFlow) {
     }
   }
   lf.register({
-    type: 'start',
+    type: code.START,
     view: CircleNode,
     model: StartNodeModel,
   })
@@ -124,7 +125,7 @@ export default function RegisteNode(lf: LogicFlow) {
       super(data, graphModel);
       this.properties = {
         labelColor: '#000000',
-        type: 'approval',
+        type: code.ApprovalNode,
         roleApi: '/api/roles',
         ...data.properties,
       }
@@ -132,14 +133,14 @@ export default function RegisteNode(lf: LogicFlow) {
   }
 
   lf.register({
-    type: 'approver',
+    type: code.ApprovalNode,
     view: ApproverNode,
     model: ApproverModel,
   })
 
 
   // 条件节点
-  class ConditionGateWayModel extends PolygonNodeModel {
+  class ConditionGatewayModel extends PolygonNodeModel {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
       this.points = [
@@ -149,7 +150,7 @@ export default function RegisteNode(lf: LogicFlow) {
         [0, 35],
       ];
       this.properties = {
-        type: 'conditionGateWay',
+        type: code.ConditionGateway,
         ...data.properties,
       }
     }
@@ -157,9 +158,9 @@ export default function RegisteNode(lf: LogicFlow) {
 
 
   lf.register({
-    type: 'conditionGateWay',
+    type: code.ConditionGateway,
     view: PolygonNode,
-    model: ConditionGateWayModel,
+    model: ConditionGatewayModel,
   });
 
 
@@ -172,7 +173,7 @@ export default function RegisteNode(lf: LogicFlow) {
       const style = model.getNodeStyle();
 
       const properties = model.properties;
-      if (properties.action == "parallelGateway-end") {
+      if (properties.action == code.ParallelGateWayEnd) {
         style.stroke = "red";
       } else {
         style.stroke = "rgb(24, 125, 255)";
@@ -207,13 +208,13 @@ export default function RegisteNode(lf: LogicFlow) {
         [0, 20]
       ];
       this.properties = {
-        type: 'parallelGateWay',
+        type: code.ParallelGateway,
         ...data.properties,
       }
     }
   }
   lf.register({
-    type: 'parallelGateway',
+    type: code.ParallelGateway,
     view: ParallelGatewayView,
     model: ParallelGatewayModel,
   });
@@ -225,7 +226,7 @@ export default function RegisteNode(lf: LogicFlow) {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
       this.properties = {
-        type: 'finish',
+        type: code.EndNode,
         ...data.properties,
       }
     }
@@ -239,7 +240,7 @@ export default function RegisteNode(lf: LogicFlow) {
         validate: (source?: BaseNodeModel, target?: BaseNodeModel) => {
           console.log(source, target)
           console.log(source?.getProperties().action)
-          let isValid = source?.type == "taskNode" && source?.getProperties().action == "finish"
+          let isValid = source?.type == code.TaskNode && source?.getProperties().action == code.TaskFinished
           return isValid;
         },
       };
@@ -268,7 +269,7 @@ export default function RegisteNode(lf: LogicFlow) {
 
 
   lf.register({
-    type: 'finish',
+    type: code.EndNode,
     view: CircleNode,
     model: FinshNodeModel,
   })
@@ -329,12 +330,12 @@ export default function RegisteNode(lf: LogicFlow) {
       super(data, graphModel);
       this.properties = {
         red: true,
-        type: 'taskNode',
-        action: 'apply',
+        type: code.TaskNode,
+        action: code.TaskApply,
         webhook: '',
         ...data.properties,
       }
-      this.text.value = data.properties.action == "" ? "apply" : this.properties.action
+      this.text.value = data.properties.action == "" ? code.TaskApply : this.properties.action
     }
 
     setAttributes() {
@@ -362,7 +363,7 @@ export default function RegisteNode(lf: LogicFlow) {
   }
 
   lf.register({
-    type: 'taskNode',
+    type: code.TaskNode,
     view: TaskView,
     model: TaskModel,
   })

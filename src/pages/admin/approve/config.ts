@@ -1,3 +1,41 @@
+
+export const code = {
+  START: "start",
+  ConditionGateway: "conditionGateway",
+  ParallelGateway: "parallelGateway",
+  ApprovalNode: "approval",
+  Condition: "condition",
+  EndNode: "finish",
+  TaskNode: "taskNode",
+  Polyline: "polyline",
+
+  TaskApply: "apply",
+  TaskWebhook: "webhook",
+  TaskFinished: "finish",
+
+  ParallelGateWayStart: "parallelGateway-start",
+  ParallelGateWayEnd: "parallelGateway-end",
+
+  VarFloat64: "float64",
+  VarBool: "bool",
+  VarString: "string",
+  VarStringArray: "[]string",
+
+  GT: "gt",
+  NE: "ne",
+  EQ: "eq",
+  LT: "lt",
+  IN: "in",
+  NOTIN: "notIn",
+
+  OR: "or",
+  AND: "and",
+}
+
+
+
+
+
 // 主题
 export const themeApprove = {
   rect: { // 矩形样式
@@ -52,7 +90,7 @@ export const data = {
         "webhook": "https://www.baidu.com",
         "preId": "6ba9c59c-2b33-42b6-a91c-1243a9240178",
         "nextId": "193e2ebe-306e-43b8-8655-6804e9db6011",
-        "nextType": "conditionGateWay"
+        "nextType": "conditionGateway"
       },
       "text": {
         "x": 140,
@@ -62,11 +100,11 @@ export const data = {
     },
     {
       "id": "193e2ebe-306e-43b8-8655-6804e9db6011",
-      "type": "conditionGateWay",
+      "type": "conditionGateway",
       "x": 290,
       "y": 250,
       "properties": {
-        "type": "conditionGateWay",
+        "type": "conditionGateway",
         "preId": "47b255a7-1334-4a27-81f4-943640477d54",
         "conditions": [
           {
@@ -133,7 +171,7 @@ export const data = {
       "x": 540,
       "y": 350,
       "properties": {
-        "type": "parallelGateWay",
+        "type": "parallelGateway",
         "action": "parallelGateway-start",
         "friend": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
         "preId": "193e2ebe-306e-43b8-8655-6804e9db6011"
@@ -150,7 +188,7 @@ export const data = {
       "x": 960,
       "y": 340,
       "properties": {
-        "type": "parallelGateWay",
+        "type": "parallelGateway",
         "action": "parallelGateway-end",
         "friend": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
         "nextId": "16bc45d3-523e-4720-9df1-544618f74a98",
@@ -174,7 +212,7 @@ export const data = {
         "webhook": "https://www.baidu.com",
         "preId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
         "nextId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
-        "nextType": "parallelGateWay"
+        "nextType": "parallelGateway"
       },
       "text": {
         "x": 750,
@@ -194,7 +232,7 @@ export const data = {
         "webhook": "https://www.baidu.com",
         "preId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
         "nextId": "50d75a7a-2f63-481b-89f6-f018ad0ad86c",
-        "nextType": "parallelGateWay"
+        "nextType": "parallelGateway"
       },
       "text": {
         "x": 750,
@@ -224,7 +262,7 @@ export const data = {
     },
     {
       "id": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
-      "type": "approver",
+      "type": "approval",
       "x": 770,
       "y": 170,
       "properties": {
@@ -274,7 +312,7 @@ export const data = {
     },
     {
       "id": "cac1933c-da50-4a67-a852-981bfe517845",
-      "type": "approver",
+      "type": "approval",
       "x": 970,
       "y": 170,
       "properties": {
@@ -477,7 +515,7 @@ export const data = {
       },
       "properties": {
         "type": "custom",
-        "nextType": "parallelGateWay",
+        "nextType": "parallelGateway",
         "nextId": "7238f0b4-49f7-442f-94de-9b25dfbd729e",
         "preId": "193e2ebe-306e-43b8-8655-6804e9db6011",
         "lineDesc": "不满足条件",

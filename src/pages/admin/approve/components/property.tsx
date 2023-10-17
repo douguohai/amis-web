@@ -3,6 +3,7 @@ import { Drawer, Select, Form, Input, Button, Radio, Space, message } from 'antd
 import { MinusCircleOutlined, PlusOutlined, } from '@ant-design/icons';
 import ReactJson from 'react-json-view'
 import { request } from '@/utils/requestInterceptor';
+import { code } from '../config'
 
 const { Search } = Input;
 
@@ -28,23 +29,23 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
       if (nodeData.properties?.type == "system") {
         form.setFieldsValue({
           "inputs": JSON.parse("[{\"inputType\":\"bool\",\"action\":\"eq\",\"inputFlag\":\"accept\",\"inputValue\":\"true\"}]"),
-          "action": "and"
+          "action": code.AND
         })
       }
-      if (nodeData?.type == "taskNode") {
+      if (nodeData?.type == code.TaskNode) {
         form.setFieldsValue({
           "webhook": nodeData.properties?.webhook == undefined ? "" : nodeData.properties?.webhook,
           "action": nodeData.properties?.action == undefined ? "" : nodeData.properties?.action
         })
       }
 
-      if (nodeData?.type == "polyline") {
+      if (nodeData?.type == code.Polyline) {
         form.setFieldsValue({
           "lineDesc": nodeData.text?.value == undefined ? "" : nodeData.text?.value,
         })
       }
 
-      if (nodeData?.type == "approver") {
+      if (nodeData?.type == code.ApprovalNode) {
         const roleApi = nodeData.properties?.roleApi == undefined ? "/api/roles" : nodeData.properties?.roleApi
         form.setFieldsValue({
           "roleApi": roleApi,
@@ -223,15 +224,15 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
             options={[
               {
                 label: '发起审批',
-                value: 'apply'
+                value: code.TaskApply
               },
               {
                 label: '系统服务',
-                value: 'webhook'
+                value: code.TaskWebhook
               },
               {
                 label: '审批结束',
-                value: 'finish'
+                value: code.TaskFinished
               },
             ]}
           />
@@ -384,8 +385,8 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                 </Form.Item>
                 <Form.Item label="关系条件" name="action" initialValue={{ 'action': nodeData.properties.action }}>
                   <Radio.Group >
-                    <Radio.Button value='and'>且</Radio.Button>
-                    <Radio.Button value="or">或</Radio.Button>
+                    <Radio.Button value={code.AND}>且</Radio.Button>
+                    <Radio.Button value={code.OR}>或</Radio.Button>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="条件" rules={[{ required: true }]}>
@@ -412,10 +413,10 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                             <Form.Item name={[field.name, 'inputType']} rules={[{ required: true }]} initialValue={'string'}>
                               <Select style={{ width: 90 }} getPopupContainer={triggerNode => triggerNode.parentNode}
                                 options={[
-                                  { label: 'float64', value: 'float64' },
-                                  { label: 'bool', value: 'bool' },
-                                  { label: 'string', value: 'string' },
-                                  { label: '[]string', value: '[]string' },
+                                  { label: code.VarFloat64, value: code.VarFloat64 },
+                                  { label: code.VarBool, value: code.VarBool },
+                                  { label: code.VarString, value: code.VarString },
+                                  { label: code.VarStringArray, value: code.VarStringArray },
                                 ]}
                               >
                               </Select>
@@ -423,12 +424,12 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                             <Form.Item name={[field.name, 'action']} rules={[{ required: true }]} initialValue={'eq'}>
                               <Select style={{ width: 85 }} getPopupContainer={triggerNode => triggerNode.parentNode}
                                 options={[
-                                  { label: '等于', value: 'eq' },
-                                  { label: '不等于', value: 'ne' },
-                                  { label: '大于', value: 'gt' },
-                                  { label: '小于', value: 'lt' },
-                                  { label: '包含', value: 'in' },
-                                  { label: '不包含', value: 'notLn' },
+                                  { label: '等于', value: code.EQ },
+                                  { label: '不等于', value: code.NE },
+                                  { label: '大于', value: code.GT },
+                                  { label: '小于', value: code.LT },
+                                  { label: '包含', value: code.IN },
+                                  { label: '不包含', value: code.NOTIN },
                                 ]}
                               >
                               </Select>
@@ -473,10 +474,10 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                     <Radio value="审批拒绝">审批拒绝</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="关系条件" name="action" initialValue={{ 'action': 'and' }} hidden>
+                <Form.Item label="关系条件" name="action" initialValue={{ 'action': code.AND }} hidden>
                   <Radio.Group >
-                    <Radio.Button value='and'>且</Radio.Button>
-                    <Radio.Button value="or">或</Radio.Button>
+                    <Radio.Button value={code.AND}>且</Radio.Button>
+                    <Radio.Button value={code.OR}>或</Radio.Button>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="条件" hidden name="inputs">
@@ -515,7 +516,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
               form.validateFields().then(value => {
                 // 验证通过后进入 
                 console.log(value, "success", nodeData);
-                if (nodeData.type == "polyline") {
+                if (nodeData.type == code.Polyline) {
                   updateProperty(nodeData.id, {
                     ...nodeData,
                     properties: {
@@ -548,13 +549,13 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         }
       >
         {contextHolder}
-        {nodeData.properties?.type === "start" ? getStart() : ''}
-        {nodeData.type === "taskNode" ? getTaskNode() : ''}
-        {nodeData.type === "parallelGateway" ? getParallelGatewayNode() : ''}
-        {nodeData.type === "conditionGateWay" ? getConditionGateWayNode() : ''}
-        {nodeData.type === "approver" ? getApproveList() : ''}
-        {nodeData.type === "finish" ? getFinshNode() : ''}
-        {nodeData.type === "polyline" ? getPolylineNode() : ''}
+        {nodeData.properties?.type === code.START ? getStart() : ''}
+        {nodeData.type === code.TaskNode ? getTaskNode() : ''}
+        {nodeData.type === code.ParallelGateway ? getParallelGatewayNode() : ''}
+        {nodeData.type === code.ConditionGateway ? getConditionGateWayNode() : ''}
+        {nodeData.type === code.ApprovalNode ? getApproveList() : ''}
+        {nodeData.type === code.EndNode ? getFinshNode() : ''}
+        {nodeData.type === code.Polyline ? getPolylineNode() : ''}
       </Drawer>
   )
 }
