@@ -126,7 +126,8 @@ export default function RegisteNode(lf: LogicFlow) {
       this.properties = {
         labelColor: '#000000',
         type: code.ApprovalNode,
-        roleApi: '/api/roles',
+        api: '/api/roles',
+        approveType: code.ApproveTypeRole,
         ...data.properties,
       }
     }

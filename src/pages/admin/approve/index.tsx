@@ -250,17 +250,27 @@ export default function ApproveExample() {
         console.log(nodeModel)
         const currentNextId = nodeModel.getProperties().nextId;
         if ("" != currentNextId && lf.getNodeDataById(currentNextId)?.type == code.EndNode) {
-          lf.deleteEdgeByNodeId({
-            sourceNodeId: id,
-            targetNodeId: currentNextId,
-          });
-          let { nextId, nextType, ...temp } = node.model.properties
-          lf.setProperties(id, temp)
+          // lf.deleteEdgeByNodeId({
+          //   sourceNodeId: id,
+          //   targetNodeId: currentNextId,
+          // });
+          // let { nextId, nextType, ...temp } = node.model.properties
+          // lf.setProperties(id, temp)
           lf.deleteProperty(currentNextId, "preId")
-          let { type, ...temp2 } = data.properties
-          data.properties = temp2
+          // lf.deleteProperty(currentNextId, "preId")
+          // lf.deleteProperty(currentNextId, "nextId")
+          data.properties = node.model.properties
         }
         nodeModel.updateText(data.properties.action);
+      } else if (nodeModel.type == code.ApprovalNode) {
+        if (node.model.properties.approveType == code.ApproveTypeRole) {
+          lf.deleteProperty(id, "userApproveType")
+          lf.deleteProperty(id, "users")
+          data.properties = node.model.properties
+        } else if (node.model.properties.approveType == code.ApproveTypeUser) {
+          lf.deleteProperty(id, "roles")
+          data.properties = node.model.properties
+        }
       }
     } else if (edge) {
       console.log(edge)

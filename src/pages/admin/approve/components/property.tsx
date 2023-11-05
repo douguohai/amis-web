@@ -15,7 +15,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [approveUser, setApproveUser] = useState(JSON.parse("{\"status\":0,\"data\":[{\"label\":\"T3领导-系统填充\",\"value\":\"t3Leader\"},{\"label\":\"T2领导-系统填充\",\"value\":\"t2Leader\"},{\"label\":\"T1领导-系统填充\",\"value\":\"t1Leader\"}]}"));
+  const [approveRole, setApproveRole] = useState(JSON.parse("{\"errCode\":0,\"errMessage\":\"成功\",\"data\":[{\"label\":\"T3领导\",\"value\":\"t3Leader\"},{\"label\":\"T2领导\",\"value\":\"t2Leader\"},{\"label\":\"T1领导\",\"value\":\"t1Leader\"}]}"));
+
+  const [approveUser, setApproveUser] = useState(JSON.parse("{\"errCode\":0,\"errMessage\":\"成功\",\"data\":[{\"label\":\"一级管理员\",\"options\":[{\"label\":\"张大海\",\"value\":\"001\"}]},{\"label\":\"二级管理员\",\"options\":[{\"label\":\"李大海\",\"value\":\"002\"}]}]}"));
 
   useEffect(() => {
     console.log(nodeData)
@@ -46,17 +48,21 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
       }
 
       if (nodeData?.type == code.ApprovalNode) {
-        const roleApi = nodeData.properties?.roleApi == undefined ? "/api/roles" : nodeData.properties?.roleApi
+        const approveType = nodeData.properties?.approveType == undefined ? code.ApproveTypeRole : nodeData.properties?.approveType
+        let api = nodeData.properties?.api
+        if (api == undefined) {
+          api = approveType == code.ApproveTypeRole ? "/api/roles" : "/api/users"
+        }
         form.setFieldsValue({
-          "roleApi": roleApi,
-          "approveType": nodeData.properties?.approveType == undefined ? "" : nodeData.properties?.approveType,
+          "api": api,
+          "approveType": approveType,
         })
         request({
           method: "get",
-          url: roleApi,
+          url: api,
         }).then((res: any) => {
           console.log("res:", res);
-          if (res.data.status != 0) {
+          if (res.data.errCode != 0) {
             messageApi.open({
               type: 'error',
               content: '加载角色信息失败，请核查接口返回信息是否符合标准，目前采用系统模拟角色',
@@ -74,7 +80,12 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                 marginTop: '20vh',
               },
             });
-            setApproveUser(res.data)
+            if (approveType == code.ApproveTypeRole) {
+              setApproveRole(res.data)
+            } else {
+              setApproveUser(res.data)
+            }
+
           }
         }).catch((error: any) => {
           console.log("error:", error);
@@ -86,17 +97,26 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
 
   const getApproveList = () => {
+
     const approveSelect =
       <Form
         layout="horizontal" form={form} labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
-        <Form.Item label="解释">
+        <Form.Item label="解释" >
+
+          <span className="ant-form-text">  审批节点，加载第三方系统角色进行审批<br />
+            请在角色获取配置获取第三方角色接口地址，<br />
+            http://www.api.com/api/users<br />
+            要求get方式请求，返回角色列表如下：<br />
+            <ReactJson src={approveUser} collapsed={true} theme="monokai" />
+          </span>
+
           <span className="ant-form-text">  审批节点，加载第三方系统角色进行审批<br />
             请在角色获取配置获取第三方角色接口地址，<br />
             http://www.api.com/api/roles<br />
             要求get方式请求，返回角色列表如下：<br />
-            <ReactJson src={approveUser} collapsed={true} theme="monokai" />
+            <ReactJson src={approveRole} collapsed={true} theme="monokai" />
           </span>
         </Form.Item>
         <Form.Item label="唯一标识">
@@ -105,57 +125,162 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         <Form.Item label="节点类型">
           <span className="ant-form-text">{nodeData.properties.type}(审批节点)</span>
         </Form.Item>
-        <Form.Item label="角色获取" name="roleApi" initialValue={"/api/roles"} rules={[{ required: true, message: '请输入角色获取地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
-          <Search
-            placeholder="请输入获取角色列表地址"
-            allowClear
-            enterButton="加载"
-            size="large"
-            onSearch={(e, v) => {
-              console.log(e, v)
-              request({
-                method: "get",
-                url: e,
-              }).then((res: any) => {
-                console.log("res:", res);
-                if (res.data.status != 0) {
-                  messageApi.open({
-                    type: 'error',
-                    content: '加载角色信息失败，请核查接口返回信息是否符合标准',
-                    duration: 2,
-                    style: {
-                      marginTop: '20vh',
-                    },
-                  });
-                } else {
-                  messageApi.open({
-                    type: 'success',
-                    content: '加载角色信息成功',
-                    duration: 2,
-                    style: {
-                      marginTop: '20vh',
-                    },
-                  });
-                  setApproveUser(res.data)
-                }
-              }).catch((error: any) => {
-                console.log("error:", error);
-                messageApi.open({
-                  type: 'error',
-                  content: '加载角色信息失败，请核查地址是否正常',
-                  duration: 4,
-                  style: {
-                    marginTop: '20vh',
-                  },
-                });
-              });
-            }}
+        <Form.Item name="approveType" label="节点类型" initialValue={code.ApproveTypeRole}>
+          <Select getPopupContainer={triggerNode => triggerNode.parentNode}
+            options={[
+              {
+                label: '指定角色',
+                value: 'role'
+              },
+              {
+                label: '指定人员',
+                value: 'user'
+              }
+            ]}
           />
         </Form.Item>
-        <Form.Item label="审核节点类型" name="approveType" initialValue={nodeData.properties.action} rules={[{ required: true, message: '请选择审批角色' }]}>
-          <Select getPopupContainer={triggerNode => triggerNode.parentNode} notFoundContent={'请配置角色获取地址，并进行访问'} options={approveUser.data}>
-          </Select>
+
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, curValues) => prevValues.approveType !== curValues.approveType}>
+          {({ getFieldValue, setFieldValue }) => {
+            let fieldType = getFieldValue('approveType');
+
+            if (fieldType == code.ApproveTypeUser) {
+              setFieldValue("api", "/api/users")
+              return (
+                <div>
+                  <Form.Item label="人员获取" name="api" initialValue={"/api/users"} rules={[{ required: true, message: '请输入用户获取地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+                    <Search
+                      placeholder="请输入获取角色列表地址"
+                      allowClear
+                      enterButton="加载"
+                      size="large"
+                      onSearch={(e, v) => {
+                        console.log(e, v)
+                        request({
+                          method: "get",
+                          url: e,
+                        }).then((res: any) => {
+                          console.log("res:", res);
+                          if (res.data.errCode != 0) {
+                            messageApi.open({
+                              type: 'error',
+                              content: '加载角色信息失败，请核查接口返回信息是否符合标准',
+                              duration: 2,
+                              style: {
+                                marginTop: '20vh',
+                              },
+                            });
+                          } else {
+                            messageApi.open({
+                              type: 'success',
+                              content: '加载角色信息成功',
+                              duration: 2,
+                              style: {
+                                marginTop: '20vh',
+                              },
+                            });
+                            setApproveUser(res.data)
+                          }
+                        }).catch((error: any) => {
+                          console.log("error:", error);
+                          messageApi.open({
+                            type: 'error',
+                            content: '加载角色信息失败，请核查地址是否正常',
+                            duration: 4,
+                            style: {
+                              marginTop: '20vh',
+                            },
+                          });
+                        });
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item label="用户信息"
+                    name="users" initialValue={nodeData.properties.action} rules={[{ required: true, message: '请选择用户信息' }]}>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode} notFoundContent={'请配置角色获取地址，并进行访问'} mode="multiple" options={approveUser.data}>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item label="审批类型" name="userApproveType" initialValue={'OR'} rules={[{ required: true, message: '请选择审批类型' }]}>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode} notFoundContent={'请配置角色获取地址，并进行访问'}
+                      options={[
+                        {
+                          label: '或签',
+                          value: code.ApproveTypeAnd
+                        },
+                        {
+                          label: '会签',
+                          value: code.ApproveTypeOr
+                        }
+                      ]}>
+                    </Select>
+                  </Form.Item>
+                </div>
+              )
+            } else {
+              setFieldValue("api", "/api/roles")
+              return (
+                <div>
+                  <Form.Item label="角色获取" name="api" initialValue={"/api/roles"} rules={[{ required: true, message: '请输入角色获取地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
+                    <Search
+                      placeholder="请输入获取角色列表地址"
+                      allowClear
+                      enterButton="加载"
+                      size="large"
+                      onSearch={(e, v) => {
+                        console.log(e, v)
+                        request({
+                          method: "get",
+                          url: e,
+                        }).then((res: any) => {
+                          console.log("res:", res);
+                          if (res.data.errCode != 0) {
+                            messageApi.open({
+                              type: 'error',
+                              content: '加载角色信息失败，请核查接口返回信息是否符合标准',
+                              duration: 2,
+                              style: {
+                                marginTop: '20vh',
+                              },
+                            });
+                          } else {
+                            messageApi.open({
+                              type: 'success',
+                              content: '加载角色信息成功',
+                              duration: 2,
+                              style: {
+                                marginTop: '20vh',
+                              },
+                            });
+                            setApproveRole(res.data)
+                          }
+                        }).catch((error: any) => {
+                          console.log("error:", error);
+                          messageApi.open({
+                            type: 'error',
+                            content: '加载角色信息失败，请核查地址是否正常',
+                            duration: 4,
+                            style: {
+                              marginTop: '20vh',
+                            },
+                          });
+                        });
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item label="角色信息" name="roles" initialValue={nodeData.properties.action} rules={[{ required: true, message: '请选择审批角色' }]}>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode} notFoundContent={'请配置角色获取地址，并进行访问'} options={approveRole.data}>
+                    </Select>
+                  </Form.Item>
+                </div>
+
+              )
+            }
+          }}
         </Form.Item>
+
+
         <Form.Item label="携带参数">
           <ReactJson src={nodeData.properties} theme="monokai" />
         </Form.Item>

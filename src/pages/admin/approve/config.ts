@@ -30,6 +30,12 @@ export const code = {
 
   OR: "or",
   AND: "and",
+
+  ApproveTypeRole: "role", //指定角色
+  ApproveTypeUser: "user", //指定人员
+
+  ApproveTypeAnd: "AND", //会签
+  ApproveTypeOr: "OR", //或签
 }
 
 
@@ -268,9 +274,9 @@ export const data = {
       "properties": {
         "labelColor": "#000000",
         "type": "approval",
-        "roleApi": "/api/roles",
+        "api": "/api/roles",
         "preId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
-        "approveType": "t1Leader",
+        "approveType": "role",
         "conditions": [
           {
             "type": "system",
@@ -318,7 +324,7 @@ export const data = {
       "properties": {
         "labelColor": "#000000",
         "type": "approval",
-        "roleApi": "/api/roles",
+        "api": "/api/roles",
         "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
         "conditions": [
           {
@@ -352,7 +358,7 @@ export const data = {
             ]
           }
         ],
-        "approveType": "t2Leader"
+        "approveType": "role"
       },
       "text": {
         "x": 970,
