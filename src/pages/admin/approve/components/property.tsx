@@ -620,9 +620,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
     return result;
   }
 
-  console.log("nodeData", nodeData)
-
-
 
   return (
     nodeData in ["", undefined] ? <div /> :

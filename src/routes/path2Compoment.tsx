@@ -18,8 +18,9 @@ import PermissionControl from "@/pages/admin/schema/PermissionControl";
 import RoleControl from "@/pages/admin/schema/RoleControl";
 import Simple2 from "@/pages/admin/dialog/Simple2";
 import Horizontal from "@/pages/admin/horizontal";
-import MagicFlow from "@/pages/admin/flow/magicFlow";
-import ApproveFlow from "@/pages/admin/approve/index";
+import FlowEditor from "@/pages/admin/approve/editor";
+import FlowList from "@/pages/admin/approve/list";
+import FlowApps from "@/pages/admin/approve/apps";
 const path2components = [
     {
         path: '/',
@@ -106,9 +107,18 @@ const path2components = [
         component: RoleControl
     },
     {
-        path: '/flow/index',
-        component: ApproveFlow
-    }
+        path: '/flow/editor',
+        component: FlowEditor
+    },
+    {
+        path: '/flow/list',
+        component: FlowList
+    },
+    {
+        path: '/flow/apps',
+        component: FlowApps
+    },
+
 ]
 
 export default path2components;

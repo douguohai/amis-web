@@ -156,7 +156,7 @@ export default class Admin extends React.Component<AdminProps, any> {
             <Dropdown menu={{ items }} placement="bottomLeft" trigger={['click', 'hover']}>
               <Button>
                 <Space>
-                  <Avatar icon={<UserOutlined />} />
+                  <Avatar icon={<UserOutlined rev={undefined} />} />
                   admin
                 </Space>
               </Button>

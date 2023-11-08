@@ -73,10 +73,24 @@ module.exports = () => {
               {
                 label: "代码编辑器",
                 path: "/form/editor",
+              }
+            ],
+          },
+          {
+            label: "流程引擎",
+            icon: "fa fa-magic",
+            children: [
+              {
+                label: "应用管理",
+                path: "/flow/apps",
               },
               {
-                label: "流程图",
-                path: "/flow/index",
+                label: "流程列表",
+                path: "/flow/list",
+              },
+              {
+                label: "设计流程",
+                path: "/flow/editor",
               },
             ],
           },
