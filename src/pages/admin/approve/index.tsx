@@ -250,15 +250,7 @@ export default function ApproveExample() {
         console.log(nodeModel)
         const currentNextId = nodeModel.getProperties().nextId;
         if ("" != currentNextId && lf.getNodeDataById(currentNextId)?.type == code.EndNode) {
-          // lf.deleteEdgeByNodeId({
-          //   sourceNodeId: id,
-          //   targetNodeId: currentNextId,
-          // });
-          // let { nextId, nextType, ...temp } = node.model.properties
-          // lf.setProperties(id, temp)
           lf.deleteProperty(currentNextId, "preId")
-          // lf.deleteProperty(currentNextId, "preId")
-          // lf.deleteProperty(currentNextId, "nextId")
           data.properties = node.model.properties
         }
         nodeModel.updateText(data.properties.action);

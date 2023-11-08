@@ -56,6 +56,8 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         form.setFieldsValue({
           "api": api,
           "approveType": approveType,
+          "users": nodeData.properties?.users,
+          "roles": nodeData.properties?.roles,
         })
         request({
           method: "get",
@@ -147,7 +149,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
             let fieldType = getFieldValue('approveType');
 
             if (fieldType == code.ApproveTypeUser) {
-              setFieldValue("api", "/api/users")
               return (
                 <div>
                   <Form.Item label="人员获取" name="api" initialValue={"/api/users"} rules={[{ required: true, message: '请输入用户获取地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
@@ -219,7 +220,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                 </div>
               )
             } else {
-              setFieldValue("api", "/api/roles")
               return (
                 <div>
                   <Form.Item label="角色获取" name="api" initialValue={"/api/roles"} rules={[{ required: true, message: '请输入角色获取地址' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>

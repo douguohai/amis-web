@@ -275,8 +275,8 @@ export const data = {
         "labelColor": "#000000",
         "type": "approval",
         "api": "/api/roles",
-        "preId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
         "approveType": "role",
+        "preId": "265e697f-3381-4e89-9a6f-76fbcad7e9ce",
         "conditions": [
           {
             "type": "system",
@@ -308,7 +308,8 @@ export const data = {
               }
             ]
           }
-        ]
+        ],
+        "roles": "t2Leader"
       },
       "text": {
         "x": 770,
@@ -324,7 +325,8 @@ export const data = {
       "properties": {
         "labelColor": "#000000",
         "type": "approval",
-        "api": "/api/roles",
+        "api": "/api/users",
+        "approveType": "user",
         "preId": "79eea628-a2bc-4215-b3cb-4039d89e45ce",
         "conditions": [
           {
@@ -358,7 +360,10 @@ export const data = {
             ]
           }
         ],
-        "approveType": "role"
+        "users": [
+          "001"
+        ],
+        "userApproveType": "OR"
       },
       "text": {
         "x": 970,
