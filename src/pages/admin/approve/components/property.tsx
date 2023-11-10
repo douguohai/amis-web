@@ -15,9 +15,9 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [approveRole, setApproveRole] = useState(JSON.parse("{\"errCode\":0,\"errMessage\":\"成功\",\"data\":[{\"label\":\"T3领导\",\"value\":\"t3Leader\"},{\"label\":\"T2领导\",\"value\":\"t2Leader\"},{\"label\":\"T1领导\",\"value\":\"t1Leader\"}]}"));
+  const [approveRole, setApproveRole] = useState(JSON.parse("{\"errorCode\":0,\"errorMessage\":\"成功\",\"data\":[{\"label\":\"T3领导\",\"value\":\"t3Leader\"},{\"label\":\"T2领导\",\"value\":\"t2Leader\"},{\"label\":\"T1领导\",\"value\":\"t1Leader\"}]}"));
 
-  const [approveUser, setApproveUser] = useState(JSON.parse("{\"errCode\":0,\"errMessage\":\"成功\",\"data\":[{\"label\":\"一级管理员\",\"options\":[{\"label\":\"张大海\",\"value\":\"001\"}]},{\"label\":\"二级管理员\",\"options\":[{\"label\":\"李大海\",\"value\":\"002\"}]}]}"));
+  const [approveUser, setApproveUser] = useState(JSON.parse("{\"errorCode\":0,\"errorMessage\":\"成功\",\"data\":[{\"label\":\"一级管理员\",\"options\":[{\"label\":\"张大海\",\"value\":\"001\"}]},{\"label\":\"二级管理员\",\"options\":[{\"label\":\"李大海\",\"value\":\"002\"}]}]}"));
 
   useEffect(() => {
     console.log(nodeData)
@@ -64,7 +64,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
           url: api,
         }).then((res: any) => {
           console.log("res:", res);
-          if (res.data.errCode != 0) {
+          if (res.data.errorCode != 0) {
             messageApi.open({
               type: 'error',
               content: '加载角色信息失败，请核查接口返回信息是否符合标准，目前采用系统模拟角色',
@@ -164,7 +164,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                           url: e,
                         }).then((res: any) => {
                           console.log("res:", res);
-                          if (res.data.errCode != 0) {
+                          if (res.data.errorCode != 0) {
                             messageApi.open({
                               type: 'error',
                               content: '加载角色信息失败，请核查接口返回信息是否符合标准',
@@ -235,7 +235,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
                           url: e,
                         }).then((res: any) => {
                           console.log("res:", res);
-                          if (res.data.errCode != 0) {
+                          if (res.data.errorCode != 0) {
                             messageApi.open({
                               type: 'error',
                               content: '加载角色信息失败，请核查接口返回信息是否符合标准',
