@@ -86,7 +86,11 @@ module.exports = () => {
               },
               {
                 label: "流程列表",
-                path: "/flow/list",
+                path: "/flow/flowlist",
+              },
+              {
+                label: "实例列表",
+                path: "/flow/instancelist",
               },
               {
                 label: "设计流程",

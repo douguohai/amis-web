@@ -7,7 +7,7 @@ const schema = {
         "type": "crud",
         "name": "crud",
         "syncLocation": false,
-        "api": "/amis/api/mock2/crud/table4",
+        "api": "http://localhost:8080/v1/sys/flow/list",
         "filter": {
             "debug": true,
             "title": "条件搜索",
@@ -17,23 +17,16 @@ const schema = {
                     "body": [
                         {
                             "type": "input-text",
-                            "name": "keywords",
-                            "label": "关键字",
+                            "name": "app",
+                            "label": "应用名称",
                             "clearable": true,
-                            "placeholder": "通过关键字搜索",
+                            "placeholder": "通应用名称搜索",
                             "size": "sm"
                         },
                         {
                             "type": "input-text",
-                            "name": "engine",
-                            "label": "Engine",
-                            "clearable": true,
-                            "size": "sm"
-                        },
-                        {
-                            "type": "input-text",
-                            "name": "platform",
-                            "label": "Platform",
+                            "name": "name",
+                            "label": "业务名称",
                             "clearable": true,
                             "size": "sm"
                         }
@@ -62,28 +55,23 @@ const schema = {
         "columns": [
             {
                 "name": "id",
-                "label": "ID"
+                "label": "编号"
             },
             {
-                "name": "engine",
-                "label": "Rendering engine"
+                "name": "app",
+                "label": "应用名称"
             },
             {
-                "name": "browser",
-                "label": "Browser"
+                "name": "name",
+                "label": "业务名称"
             },
             {
-                "name": "platform",
-                "label": "Platform(s)",
-                "canAccessSuperData": false
+                "name": "status",
+                "label": "状态"
             },
             {
-                "name": "version",
-                "label": "Engine version"
-            },
-            {
-                "name": "grade",
-                "label": "CSS grade"
+                "name": "updateAt",
+                "label": "更新时间"
             }
         ]
     }

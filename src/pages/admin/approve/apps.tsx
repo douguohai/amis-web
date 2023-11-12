@@ -3,110 +3,141 @@ import schema2component from "../../../utils/schema2component";
 
 const schema = {
     "type": "page",
-    "body": {
-        "type": "crud",
-        "name": "crud",
-        "syncLocation": false,
-        "api": "/amis/api/mock2/crud/table4",
-        "filter": {
-            "debug": true,
-            "title": "条件搜索",
-            "body": [
-                {
-                    "type": "group",
+    "body": [
+        {
+            "label": "新增",
+            "type": "button",
+            "actionType": "dialog",
+            "level": "primary",
+            "className": "m-b-sm",
+            "dialog": {
+                "title": "新增表单",
+                "body": {
+                    "type": "form",
+                    "api": "post:/amis/api/mock2/sample",
                     "body": [
                         {
                             "type": "input-text",
-                            "name": "keywords",
-                            "label": "关键字",
-                            "clearable": true,
-                            "placeholder": "通过关键字搜索",
-                            "size": "sm"
+                            "name": "app",
+                            "label": "应用名称"
                         },
                         {
                             "type": "input-text",
-                            "name": "engine",
-                            "label": "Engine",
-                            "clearable": true,
-                            "size": "sm"
+                            "name": "key",
+                            "label": "密钥"
                         },
                         {
                             "type": "input-text",
-                            "name": "platform",
-                            "label": "Platform",
-                            "clearable": true,
-                            "size": "sm"
+                            "name": "noticeUrl",
+                            "label": "回调地址"
+                        },
+                        {
+                            "type": "input-text",
+                            "name": "rolesUrl",
+                            "label": "角色核验"
+                        },
+                        {
+                            "type": "input-text",
+                            "name": "usersUrl",
+                            "label": "身份信息"
+                        },
+                    ]
+                }
+            }
+        }, {
+            "type": "crud",
+            "syncLocation": false,
+            "api": "http://localhost:8080/v1/sys/app/list",
+            "columns": [
+                {
+                    "name": "id",
+                    "label": "编号"
+                },
+                {
+                    "name": "app",
+                    "label": "应用名称"
+                },
+                {
+                    "name": "key",
+                    "label": "密钥"
+                },
+                {
+                    "name": "noticeUrl",
+                    "label": "回调地址"
+                },
+                {
+                    "name": "rolesUrl",
+                    "label": "角色核验"
+                },
+                {
+                    "name": "usersUrl",
+                    "label": "身份信息"
+                },
+                {
+                    "name": "del",
+                    "label": "状态"
+                },
+                {
+                    "name": "updateAt",
+                    "label": "修改时间"
+                },
+                {
+                    "type": "operation",
+                    "label": "操作",
+                    "buttons": [
+                        {
+                            "label": "详情",
+                            "type": "button",
+                            "level": "link",
+                            "actionType": "dialog",
+                            "dialog": {
+                                "title": "查看详情",
+                                "body": {
+                                    "type": "form",
+                                    "body": [
+                                        {
+                                            "type": "input-text",
+                                            "name": "app",
+                                            "label": "应用名称"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "key",
+                                            "label": "密钥"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "noticeUrl",
+                                            "label": "回调地址"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "rolesUrl",
+                                            "label": "角色核验"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "usersUrl",
+                                            "label": "身份信息"
+                                        },
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "label": "锁定",
+                            "type": "button",
+                            "actionType": "ajax",
+                            "level": "link",
+                            "confirmText": "确认要删除？",
+                            "api": "delete:/amis/api/mock2/sample/${id}"
                         }
                     ]
                 }
-            ],
-            "actions": [
-                {
-                    "type": "button",
-                    "actionType": "drawer",
-                    "icon": "fa fa-plus",
-                    "label": "创建记录",
-                    "target": "crud",
-                    "closeOnOutside": true,
-                    "drawer": {
-                        "title": "创建记录",
-                        "body": {
-                            "type": "form",
-                            "api": "post:/amis/api/mock2/sample",
-                            "body": [
-                                {
-                                    "type": "input-text",
-                                    "name": "engine",
-                                    "label": "Engine"
-                                },
-                                {
-                                    "type": "input-text",
-                                    "name": "browser",
-                                    "label": "Browser"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "reset",
-                    "label": "重置"
-                },
-                {
-                    "type": "submit",
-                    "level": "primary",
-                    "label": "查询"
-                }
             ]
-        },
-        "columns": [
-            {
-                "name": "id",
-                "label": "ID"
-            },
-            {
-                "name": "engine",
-                "label": "Rendering engine"
-            },
-            {
-                "name": "browser",
-                "label": "Browser"
-            },
-            {
-                "name": "platform",
-                "label": "Platform(s)",
-                "canAccessSuperData": false
-            },
-            {
-                "name": "version",
-                "label": "Engine version"
-            },
-            {
-                "name": "grade",
-                "label": "CSS grade"
-            }
-        ]
-    }
+        }]
+
+
 }
 
 export default schema2component(schema);

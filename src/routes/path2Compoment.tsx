@@ -19,7 +19,8 @@ import RoleControl from "@/pages/admin/schema/RoleControl";
 import Simple2 from "@/pages/admin/dialog/Simple2";
 import Horizontal from "@/pages/admin/horizontal";
 import FlowEditor from "@/pages/admin/approve/editor";
-import FlowList from "@/pages/admin/approve/list";
+import FlowList from "@/pages/admin/approve/flowlist";
+import InstancList from "@/pages/admin/approve/instanclist";
 import FlowApps from "@/pages/admin/approve/apps";
 const path2components = [
     {
@@ -111,12 +112,16 @@ const path2components = [
         component: FlowEditor
     },
     {
-        path: '/flow/list',
+        path: '/flow/flowlist',
         component: FlowList
     },
     {
         path: '/flow/apps',
         component: FlowApps
+    },
+    {
+        path: '/flow/instancelist',
+        component: InstancList
     },
 
 ]
