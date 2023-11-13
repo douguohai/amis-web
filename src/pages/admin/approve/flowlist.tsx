@@ -13,19 +13,20 @@ const schema = {
             "title": "新增表单",
             "body": {
                 "type": "form",
-                "api": "",
+                "api": "post:http://localhost:8080/v1/flow/add",
                 "body": [
                     {
                         "label": "应用名称",
                         "type": "select",
-                        "name": "app",
+                        "name": "appId",
                         "source": "http://localhost:8080/v1/sys/option/select/1", // get 请求
-
+                        "required": true
                     },
                     {
                         "type": "input-text",
                         "name": "name",
-                        "label": "业务名称"
+                        "label": "业务名称",
+                        "required": true
                     },
                     {
                         "name": "status",
@@ -41,7 +42,8 @@ const schema = {
                                 "label": "关闭",
                                 "value": 1
                             }
-                        ]
+                        ],
+                        "required": true
                     }
                 ]
             }
@@ -144,12 +146,14 @@ const schema = {
                                     {
                                         "type": "input-text",
                                         "name": "name",
-                                        "label": "业务名称"
+                                        "label": "业务名称",
+                                        "required": true
                                     },
                                     {
                                         "name": "status",
                                         "type": "radios",
                                         "label": "状态",
+                                        "required": true,
                                         "options": [
                                             {
                                                 "label": "启用",
@@ -202,6 +206,7 @@ const schema = {
                                                     "name": "detail",
                                                     "label": "详情",
                                                     "accept": ".json",
+                                                    "required": true,
                                                     "asBase64": true,
                                                     "downloadUrl": false
                                                 }

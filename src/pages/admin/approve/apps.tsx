@@ -14,33 +14,14 @@ const schema = {
                 "title": "新增表单",
                 "body": {
                     "type": "form",
-                    "api": "post:/amis/api/mock2/sample",
+                    "api": "post:http://localhost:8080/v1/sys/app/add",
                     "body": [
                         {
                             "type": "input-text",
                             "name": "app",
-                            "label": "应用名称"
-                        },
-                        {
-                            "type": "input-text",
-                            "name": "key",
-                            "label": "密钥"
-                        },
-                        {
-                            "type": "input-text",
-                            "name": "noticeUrl",
-                            "label": "回调地址"
-                        },
-                        {
-                            "type": "input-text",
-                            "name": "rolesUrl",
-                            "label": "角色核验"
-                        },
-                        {
-                            "type": "input-text",
-                            "name": "usersUrl",
-                            "label": "身份信息"
-                        },
+                            "label": "应用名称",
+                            "required": true
+                        }
                     ]
                 }
             }
@@ -63,19 +44,25 @@ const schema = {
                 },
                 {
                     "name": "noticeUrl",
-                    "label": "回调地址"
+                    "label": "系统回调地址"
                 },
                 {
                     "name": "rolesUrl",
-                    "label": "角色核验"
+                    "label": "角色核验接口"
+
                 },
                 {
                     "name": "usersUrl",
-                    "label": "身份信息"
+                    "label": "身份信息获取"
                 },
                 {
-                    "name": "del",
-                    "label": "状态"
+                    "name": "status",
+                    "label": "状态",
+                    "type": "mapping",
+                    "map": {
+                        0: "<span class='label label-success'>启用</span>",
+                        1: "<span class='label label-danger'>关闭</span>",
+                    }
                 },
                 {
                     "name": "updateAt",
@@ -86,52 +73,58 @@ const schema = {
                     "label": "操作",
                     "buttons": [
                         {
-                            "label": "详情",
+                            "label": "填充核验",
                             "type": "button",
                             "level": "link",
                             "actionType": "dialog",
                             "dialog": {
-                                "title": "查看详情",
+                                "title": "填充核验",
                                 "body": {
                                     "type": "form",
+                                    "api": "post:http://localhost:8080/v1/sys/app/update",
                                     "body": [
                                         {
                                             "type": "input-text",
+                                            "name": "id",
+                                            "label": "编号",
+                                            "hidden": true
+                                        },
+                                        {
+                                            "type": "input-text",
                                             "name": "app",
-                                            "label": "应用名称"
+                                            "label": "应用名称",
+                                            "disabled": true
                                         },
                                         {
-                                            "type": "input-text",
-                                            "name": "key",
-                                            "label": "密钥"
-                                        },
-                                        {
-                                            "type": "input-text",
+                                            "type": "input-url",
                                             "name": "noticeUrl",
-                                            "label": "回调地址"
+                                            "label": "系统回调地址",
+                                            "required": true
                                         },
                                         {
-                                            "type": "input-text",
+                                            "type": "input-url",
                                             "name": "rolesUrl",
-                                            "label": "角色核验"
+                                            "label": "角色核验接口",
+                                            "required": true
                                         },
                                         {
-                                            "type": "input-text",
+                                            "type": "input-url",
                                             "name": "usersUrl",
-                                            "label": "身份信息"
+                                            "label": "身份信息获取",
+                                            "required": true
                                         },
                                     ]
                                 }
                             }
                         },
                         {
-                            "label": "锁定",
+                            "label": "状态变更",
                             "type": "button",
                             "actionType": "ajax",
                             "level": "link",
-                            "confirmText": "确认要删除？",
-                            "api": "delete:/amis/api/mock2/sample/${id}"
-                        }
+                            "confirmText": "确认要禁用？禁用后无法再次发起相关应用实例",
+                            "api": "post:http://localhost:8080/v1/sys/lock/app/${id}"
+                        },
                     ]
                 }
             ]

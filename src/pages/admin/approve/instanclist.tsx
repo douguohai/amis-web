@@ -7,7 +7,7 @@ const schema = {
         "type": "crud",
         "name": "crud",
         "syncLocation": false,
-        "api": "http://localhost:8080/v1/sys/flow/list",
+        "api": "get:http://localhost:8080/v1/sys/instance/list",
         "filter": {
             "debug": true,
             "title": "条件搜索",
@@ -35,13 +35,6 @@ const schema = {
             ],
             "actions": [
                 {
-                    "label": "进入介绍页",
-                    "type": "button",
-                    "level": "info",
-                    "actionType": "link",
-                    "link": "../flow/editor"
-                },
-                {
                     "type": "reset",
                     "label": "重置"
                 },
@@ -58,20 +51,61 @@ const schema = {
                 "label": "编号"
             },
             {
-                "name": "app",
-                "label": "应用名称"
+                "name": "instanceId",
+                "label": "实例编号",
+                "copyable": true
             },
             {
-                "name": "name",
+                "name": "flowDetailId",
                 "label": "业务名称"
             },
             {
+                "name": "attribute",
+                "label": "参与计算参数"
+            },
+            {
+                "name": "approvalStatus",
+                "label": "审批状态",
+                "type": "mapping",
+                "map": {
+                    0: "<span >未参与审批</span>",
+                    1: "<span >审批通过</span>",
+                    2: "<span >审批驳回</span>",
+                    3: "<span >审批中</span>",
+                }
+            },
+            {
                 "name": "status",
-                "label": "状态"
+                "label": "工作流状态",
+                "type": "status",
+                "source": {
+                    0: {
+                        "label": "运行中",
+                        "icon": "rolling"
+                    },
+                    1: {
+                        "label": "执行完成",
+                        "icon": "success"
+                    }
+                },
             },
             {
                 "name": "updateAt",
-                "label": "更新时间"
+                "label": "最后更新时间"
+            },
+            {
+                "type": "operation",
+                "label": "操作",
+                "buttons": [
+                    {
+                        "label": "实例详情",
+                        "type": "button",
+                        "actionType": "ajax",
+                        "level": "link",
+                        "confirmText": "确认要禁用？禁用后无法再次发起该实例",
+                        "api": "post:http://localhost:8080/v1/sys/lock/flowDetail/${id}"
+                    }
+                ]
             }
         ]
     }
