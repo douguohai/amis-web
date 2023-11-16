@@ -100,10 +100,84 @@ const schema = {
                     {
                         "label": "实例详情",
                         "type": "button",
-                        "actionType": "ajax",
                         "level": "link",
-                        "confirmText": "确认要禁用？禁用后无法再次发起该实例",
-                        "api": "post:http://localhost:8080/v1/sys/lock/flowDetail/${id}"
+                        "actionType": "drawer",
+                        "drawer": {
+                            "size": "lg",
+                            "title": "流程详情",
+                            "resizable": true,
+                            "closeOnOutside": true,
+                            "actions": [],
+                            "body": {
+                                "type": "page",
+                                "body": [{
+                                    "label": "新增版本",
+                                    "type": "button",
+                                    "actionType": "dialog",
+                                    "level": "primary",
+                                    "className": "m-b-sm",
+                                    "dialog": {
+                                        "title": "更新流程",
+                                        "body": {
+                                            "type": "form",
+                                            "api": "post:http://localhost:8080/v1/flowDetail/add",
+                                            "body": [
+                                                {
+                                                    "type": "input-text",
+                                                    "name": "flowId",
+                                                    "label": "详情",
+                                                    "hidden": true,
+                                                    "value": "${id}"
+                                                },
+                                                {
+                                                    "type": "input-file",
+                                                    "name": "detail",
+                                                    "label": "详情",
+                                                    "accept": ".json",
+                                                    "required": true,
+                                                    "asBase64": true,
+                                                    "downloadUrl": false
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "timeline",
+                                    "items": [
+                                        {
+                                            "time": "2019-02-07",
+                                            "title": "数据开发",
+                                            "detail": "2019-02-07detail",
+                                            "color": "#ffb200",
+                                            "icon": "close"
+                                        },
+                                        { "time": "2019-02-08", "title": "管理中心", "detail": "2019-02-08detail" },
+                                        {
+                                            "time": "2019-02-09",
+                                            "title": "SQL语句",
+                                            "detail": "2019-02-09detail",
+                                            "color": "warning"
+                                        },
+                                        {
+                                            "time": "2019-02-10",
+                                            "title": "一键部署",
+                                            "detail": "2019-02-10detail",
+                                            "icon": "compress-alt"
+                                        },
+                                        { "time": "2019-02-10", "title": "一键部署", "detail": "2019-02-11detail" },
+                                        {
+                                            "time": "2019-02-10",
+                                            "title": "一键部署",
+                                            "detail": "2019-02-12detail",
+                                            "icon": "close"
+                                        },
+                                        { "time": "2019-02-10", "title": "一键部署", "detail": "2019-02-13detail" }
+
+                                    ]
+                                }]
+                            }
+                        }
                     }
                 ]
             }
