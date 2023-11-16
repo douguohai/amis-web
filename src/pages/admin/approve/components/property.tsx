@@ -9,7 +9,7 @@ const { Search } = Input;
 
 
 // @ts-ignore
-export default function PropertyPanel({ nodeData, updateProperty, onClose, open }) {
+export default function PropertyPanel({ nodeData, updateProperty, onClose, open, formDisabled }) {
 
   const [form] = Form.useForm();
 
@@ -20,7 +20,6 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
   const [approveUser, setApproveUser] = useState(JSON.parse("{\"errorCode\":0,\"errorMessage\":\"成功\",\"data\":[{\"label\":\"一级管理员\",\"options\":[{\"label\":\"张大海\",\"value\":\"001\"}]},{\"label\":\"二级管理员\",\"options\":[{\"label\":\"李大海\",\"value\":\"002\"}]}]}"));
 
   useEffect(() => {
-    console.log(nodeData)
     if (nodeData != "") {
       if (nodeData.properties?.type == "custom") {
         form.setFieldsValue({
@@ -102,6 +101,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
     const approveSelect =
       <Form
+        disabled={formDisabled}
         layout="horizontal" form={form} labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
@@ -292,6 +292,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
   const getStart = () => {
     const result =
       <Form
+        disabled={formDisabled}
         layout="horizontal" form={form} labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
@@ -326,6 +327,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
     const result =
       <Form
+        disabled={formDisabled}
         layout="horizontal" form={form} labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
@@ -379,6 +381,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
     if (nodeData.properties.action == "parallelGateway-start") {
       return (
         <Form
+          disabled={formDisabled}
           layout="horizontal" form={form} labelCol={{ span: 4 }}
           wrapperCol={{ span: 20 }}
         >
@@ -402,6 +405,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
     } else {
       return (
         <Form
+          disabled={formDisabled}
           layout="horizontal" form={form} labelCol={{ span: 4 }}
           wrapperCol={{ span: 20 }}
         >
@@ -433,6 +437,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
 
   const getConditionGateWayNode = () => {
     const result = <Form
+      disabled={formDisabled}
       layout="horizontal" form={form} labelCol={{ span: 4 }}
       wrapperCol={{ span: 20 }}
     >
@@ -459,6 +464,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
   const getFinshNode = () => {
     const result =
       <Form
+        disabled={formDisabled}
         layout="horizontal" form={form} labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
@@ -482,6 +488,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
   const getPolylineNode = () => {
     const result =
       <Form
+        disabled={formDisabled}
         layout="horizontal" form={form} labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
@@ -632,7 +639,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open 
         zIndex={100000}
         open={open}
         extra={
-          <Space>
+          <Space hidden={formDisabled}>
             <Button type="primary" onClick={(e) => {
               console.log(e)
               form.validateFields().then(value => {

@@ -96,6 +96,10 @@ module.exports = () => {
                 label: "设计流程",
                 path: "/flow/editor",
               },
+              {
+                label: "设计展示",
+                path: "/flow/show",
+              },
             ],
           },
           {

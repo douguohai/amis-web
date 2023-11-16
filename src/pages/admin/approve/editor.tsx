@@ -298,7 +298,7 @@ export default function ApproveExample() {
   return (
     <div>
       <div id="graph" style={{ height: height - 70 }} />
-      <PropertyPanel updateProperty={updateProperty} onClose={onClose} nodeData={nodeData} open={open} />
+      <PropertyPanel updateProperty={updateProperty} onClose={onClose} nodeData={nodeData} open={open} formDisabled={false} />
     </div>
   )
 }
