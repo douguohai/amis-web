@@ -40,6 +40,10 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
         })
       }
 
+      form.setFieldsValue({
+        "customNodeName": nodeData.properties?.customNodeName == undefined ? "" : nodeData.properties?.customNodeName,
+      })
+
       if (nodeData?.type == code.Polyline) {
         form.setFieldsValue({
           "lineDesc": nodeData.text?.value == undefined ? "" : nodeData.text?.value,
@@ -126,6 +130,11 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
         </Form.Item>
         <Form.Item label="节点类型">
           <span className="ant-form-text">{nodeData.properties.type}(审批节点)</span>
+        </Form.Item>
+        <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
+          <Input placeholder="业务名称"
+            value={nodeData.properties.customNodeName}
+          />
         </Form.Item>
         <Form.Item name="approveType" label="节点类型" initialValue={code.ApproveTypeRole}>
           <Select getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -346,6 +355,11 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
         <Form.Item label="下级类型">
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
         </Form.Item>
+        <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
+          <Input placeholder="业务名称"
+            value={nodeData.properties.customNodeName}
+          />
+        </Form.Item>
         <Form.Item name="action" label="节点类型" initialValue={'apply'}>
           <Select getPopupContainer={triggerNode => triggerNode.parentNode}
             options={[
@@ -391,6 +405,11 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
           <Form.Item label="唯一标识">
             <span className="ant-form-text">{nodeData.id}</span>
           </Form.Item>
+          <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
+            <Input placeholder="业务名称"
+              value={nodeData.properties.customNodeName}
+            />
+          </Form.Item>
           <Form.Item label="上级节点">
             <span className="ant-form-text">{nodeData.properties.preId}</span>
           </Form.Item>
@@ -415,8 +434,10 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
           <Form.Item label="唯一标识">
             <span className="ant-form-text">{nodeData.id}</span>
           </Form.Item>
-          <Form.Item label="上级节点">
-            <span className="ant-form-text">{nodeData.properties.preId}</span>
+          <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
+            <Input placeholder="业务名称"
+              value={nodeData.properties.customNodeName}
+            />
           </Form.Item>
           <Form.Item label="下级节点">
             <span className="ant-form-text">{nodeData.properties.nextId}</span>
@@ -450,6 +471,11 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
       </Form.Item>
       <Form.Item label="节点类型">
         <span className="ant-form-text">{nodeData.properties.type}</span>
+      </Form.Item>
+      <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
+        <Input placeholder="业务名称"
+          value={nodeData.properties.customNodeName}
+        />
       </Form.Item>
       <Form.Item label="上级节点">
         <span className="ant-form-text">{nodeData.properties.preId}</span>

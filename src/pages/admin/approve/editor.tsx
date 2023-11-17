@@ -121,8 +121,6 @@ export default function ApproveExample() {
     lf.on('element:click', ({ data }) => {
       setNodeData(data);
       setOpen(true)
-      console.log(open);
-      console.log(data);
       console.log(JSON.stringify(lf.getGraphData()));
     });
     lf.on('connection:not-allowed', (data: any) => {
@@ -244,26 +242,23 @@ export default function ApproveExample() {
     const node = lf.graphModel.nodesMap[id];
     const edge = lf.graphModel.edgesMap[id];
     if (node) {
-      node.model.setProperties(Object.assign(node.model.properties, data.properties));
       const nodeModel = lf.getNodeModelById(id);
+      nodeModel.updateText(data.properties?.customNodeName)
+      nodeModel.setProperties(Object.assign(node.model.properties, data.properties))
       if (nodeModel.type == code.TaskNode) {
-        console.log(nodeModel)
         const currentNextId = nodeModel.getProperties().nextId;
         if ("" != currentNextId && lf.getNodeDataById(currentNextId)?.type == code.EndNode) {
           lf.deleteProperty(currentNextId, "preId")
-          data.properties = node.model.properties
         }
-        nodeModel.updateText(data.properties.action);
       } else if (nodeModel.type == code.ApprovalNode) {
         if (node.model.properties.approveType == code.ApproveTypeRole) {
           lf.deleteProperty(id, "userApproveType")
           lf.deleteProperty(id, "users")
-          data.properties = node.model.properties
         } else if (node.model.properties.approveType == code.ApproveTypeUser) {
           lf.deleteProperty(id, "roles")
-          data.properties = node.model.properties
         }
       }
+      data.properties = node.model.properties
     } else if (edge) {
       console.log(edge)
       edge.model.updateText(data.text?.value)
@@ -280,7 +275,6 @@ export default function ApproveExample() {
             return params;
           }),
         });
-
       } else {
         let { type, ...temp } = data.properties
         edge.model.setProperties(Object.assign(edge.model.properties, temp));

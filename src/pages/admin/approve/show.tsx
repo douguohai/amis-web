@@ -43,8 +43,11 @@ export default function ApproveExample() {
     setLf(lf);
     initControl(lf);
     RegisteNode(lf);
+    lf.fitView(30, 30);
     lf.render(data);
     initEvent(lf);
+
+    lf.zoom(0.7);
 
 
     const handleResize = () => setHeight(window.innerHeight);
@@ -52,6 +55,7 @@ export default function ApproveExample() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+
 
   }, []);
 

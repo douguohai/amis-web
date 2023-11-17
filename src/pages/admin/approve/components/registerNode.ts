@@ -26,10 +26,10 @@ export default function RegisteNode(lf: LogicFlow) {
 
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
-      console.log(data)
       this.properties = {
         nextId: '',
         nextType: '',
+        customNodeName: '',
         type: code.START,
         ...data.properties,
       }
@@ -128,8 +128,13 @@ export default function RegisteNode(lf: LogicFlow) {
         type: code.ApprovalNode,
         api: '/api/roles',
         approveType: code.ApproveTypeRole,
+        customNodeName: '',
         ...data.properties,
       }
+      if (this.properties.customNodeName != "") {
+        this.text.value = this.properties.customNodeName;
+      }
+
     }
   }
 
@@ -152,7 +157,11 @@ export default function RegisteNode(lf: LogicFlow) {
       ];
       this.properties = {
         type: code.ConditionGateway,
+        customNodeName: '',
         ...data.properties,
+      }
+      if (this.properties.customNodeName != "") {
+        this.text.value = this.properties.customNodeName;
       }
     }
   }
@@ -210,7 +219,12 @@ export default function RegisteNode(lf: LogicFlow) {
       ];
       this.properties = {
         type: code.ParallelGateway,
+        customNodeName: '',
         ...data.properties,
+      }
+
+      if (this.properties.customNodeName != "") {
+        this.text.value = this.properties.customNodeName;
       }
     }
   }
@@ -334,9 +348,12 @@ export default function RegisteNode(lf: LogicFlow) {
         type: code.TaskNode,
         action: code.TaskApply,
         webhook: '',
+        customNodeName: '',
         ...data.properties,
       }
-      this.text.value = data.properties.action == "" ? code.TaskApply : this.properties.action
+      if (this.properties.customNodeName != "") {
+        this.text.value = this.properties.customNodeName;
+      }
     }
 
     setAttributes() {
