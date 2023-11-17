@@ -107,10 +107,16 @@ const schema = {
                             "title": "流程详情",
                             "resizable": true,
                             "closeOnOutside": true,
+                            "width": '50%',
                             "actions": [],
                             "body": {
                                 "type": "page",
                                 "body": [
+                                    {
+                                        "type": "iframe",
+                                        "src": "/flow/show?id=${id}",
+                                        "height": 450
+                                    },
                                     {
                                         "type": "timeline",
                                         "items": [

@@ -13,6 +13,8 @@ import LogicFlow, {
 import GraphModel from "@logicflow/core/types/model/GraphModel";
 import { code } from '../config'
 
+const activeColor = 'red';
+
 export type nodeProperty = {
   labelColor: string,
   approveTypeLabel: string,
@@ -29,8 +31,9 @@ export default function RegisteNode(lf: LogicFlow) {
       this.properties = {
         nextId: '',
         nextType: '',
-        customNodeName: '',
         type: code.START,
+        active: false,
+        customNodeName: '开始',
         ...data.properties,
       }
     }
@@ -38,6 +41,9 @@ export default function RegisteNode(lf: LogicFlow) {
     getNodeStyle() {
       const style = super.getNodeStyle();
       style.stroke = "rgb(24, 125, 255)";
+      if (this.properties?.active) {
+        style.fill = activeColor;
+      }
       return style;
     }
 
@@ -120,6 +126,7 @@ export default function RegisteNode(lf: LogicFlow) {
       );
     }
   }
+
   class ApproverModel extends RectNodeModel {
     constructor(data: any, graphModel: GraphModel) {
       super(data, graphModel);
@@ -128,6 +135,7 @@ export default function RegisteNode(lf: LogicFlow) {
         type: code.ApprovalNode,
         api: '/api/roles',
         approveType: code.ApproveTypeRole,
+        active: false,
         customNodeName: '',
         ...data.properties,
       }
@@ -135,6 +143,14 @@ export default function RegisteNode(lf: LogicFlow) {
         this.text.value = this.properties.customNodeName;
       }
 
+    }
+
+    getNodeStyle() {
+      const style = super.getNodeStyle();
+      if (this.properties?.active) {
+        style.fill = activeColor;
+      }
+      return style;
     }
   }
 
@@ -158,12 +174,22 @@ export default function RegisteNode(lf: LogicFlow) {
       this.properties = {
         type: code.ConditionGateway,
         customNodeName: '',
+        active: false,
         ...data.properties,
       }
       if (this.properties.customNodeName != "") {
         this.text.value = this.properties.customNodeName;
       }
     }
+
+    getNodeStyle() {
+      const style = super.getNodeStyle();
+      if (this.properties?.active) {
+        style.fill = activeColor;
+      }
+      return style;
+    }
+
   }
 
 
@@ -220,6 +246,7 @@ export default function RegisteNode(lf: LogicFlow) {
       this.properties = {
         type: code.ParallelGateway,
         customNodeName: '',
+        active: false,
         ...data.properties,
       }
 
@@ -227,6 +254,15 @@ export default function RegisteNode(lf: LogicFlow) {
         this.text.value = this.properties.customNodeName;
       }
     }
+
+    getNodeStyle() {
+      const style = super.getNodeStyle();
+      if (this.properties?.active) {
+        style.fill = activeColor;
+      }
+      return style;
+    }
+
   }
   lf.register({
     type: code.ParallelGateway,
@@ -242,8 +278,18 @@ export default function RegisteNode(lf: LogicFlow) {
       super(data, graphModel);
       this.properties = {
         type: code.EndNode,
+        customNodeName: '结束',
+        active: false,
         ...data.properties,
       }
+    }
+
+    getNodeStyle() {
+      const style = super.getNodeStyle();
+      if (this.properties?.active) {
+        style.fill = activeColor;
+      }
+      return style;
     }
 
 
@@ -349,6 +395,7 @@ export default function RegisteNode(lf: LogicFlow) {
         action: code.TaskApply,
         webhook: '',
         customNodeName: '',
+        active: false,
         ...data.properties,
       }
       if (this.properties.customNodeName != "") {
@@ -374,6 +421,9 @@ export default function RegisteNode(lf: LogicFlow) {
         style.stroke = "red";
       } else {
         style.stroke = "rgb(24, 125, 255)";
+      }
+      if (this.properties?.active) {
+        style.fill = activeColor;
       }
       return style;
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LogicFlow from '@logicflow/core';
-import { Menu, Control, DndPanel } from "@logicflow/extension";
+import { Menu, Control } from "@logicflow/extension";
 import PropertyPanel from './components/property';
 import RegisteNode from './components/registerNode';
 import { themeApprove, data } from './config';
@@ -8,6 +8,9 @@ import "@logicflow/extension/lib/style/index.css";
 import "@logicflow/core/dist/style/index.css";
 import '@logicflow/extension/lib/style/index.css'
 import "@logicflow/core/dist/style/index.css";
+import { request } from '@/utils/requestInterceptor';
+import { useLocation } from 'react-router-dom';
+import { message } from 'antd';
 import "./index.css";
 import { code } from './config'
 
@@ -18,6 +21,8 @@ export default function ApproveExample() {
   const [nodeData, setNodeData] = useState("");
   const [open, setOpen] = useState(false);
   const [height, setHeight] = useState(window.innerHeight);
+  const location = useLocation();
+
 
   const config = {
     grid: {
@@ -35,19 +40,41 @@ export default function ApproveExample() {
   }
 
   useEffect(() => {
-    const lf = new LogicFlow({
-      ...config,
-      container: document.querySelector('#graph') as HTMLElement,
-    });
 
-    setLf(lf);
-    initControl(lf);
-    RegisteNode(lf);
-    lf.fitView(30, 30);
-    lf.render(data);
-    initEvent(lf);
+    const query = new URLSearchParams(location.search);
+    const instanceId = query.get('id');
 
-    lf.zoom(0.7);
+    if (instanceId != undefined) {
+      request({
+        method: "get",
+        url: "http://localhost:8080/v1/sys/preView/instance/" + instanceId,
+      }).then((res: any) => {
+        console.log("res:", res);
+        if (res.data.errorCode != 0) {
+          message.open({
+            type: 'error',
+            content: res.data.msg,
+            duration: 4,
+            style: {
+              marginTop: '15vh',
+            },
+          });
+        } else {
+          const lf = new LogicFlow({
+            ...config,
+            container: document.querySelector('#graph') as HTMLElement,
+          });
+          setLf(lf);
+          initControl(lf);
+          RegisteNode(lf);
+          lf.render(JSON.parse(res.data.data.detail));
+          initEvent(lf);
+          lf.zoom(0.7);
+        }
+      }).catch((error: any) => {
+        console.log("error:", error);
+      });
+    }
 
 
     const handleResize = () => setHeight(window.innerHeight);
