@@ -13,7 +13,7 @@ import LogicFlow, {
 import GraphModel from "@logicflow/core/types/model/GraphModel";
 import { code } from '../config'
 
-const activeColor = 'red';
+const activeColor = '#54FF9F';
 
 export type nodeProperty = {
   labelColor: string,

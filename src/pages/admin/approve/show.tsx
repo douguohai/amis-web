@@ -9,10 +9,9 @@ import "@logicflow/core/dist/style/index.css";
 import '@logicflow/extension/lib/style/index.css'
 import "@logicflow/core/dist/style/index.css";
 import { request } from '@/utils/requestInterceptor';
-import { useLocation } from 'react-router-dom';
 import { message } from 'antd';
 import "./index.css";
-import { code } from './config'
+import { useLocation } from 'react-router';
 
 // https://site.logic-flow.cn/docs/#/zh/guide/extension/adapter
 export default function ApproveExample() {
@@ -70,6 +69,14 @@ export default function ApproveExample() {
           lf.render(JSON.parse(res.data.data.detail));
           initEvent(lf);
           lf.zoom(0.7);
+          let runNodeId = res.data.data.runNodeId;
+          if (runNodeId) {
+            for (let i = 0; i < runNodeId.length; i++) {
+              lf.setProperties(runNodeId[i].nodeId, {
+                active: true,
+              });
+            }
+          }
         }
       }).catch((error: any) => {
         console.log("error:", error);
