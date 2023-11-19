@@ -38,11 +38,10 @@ export default function ApproveExample() {
     plugins: [Menu, Control],
   }
 
+  const query = new URLSearchParams(location.search);
+  const instanceId = query.get('id');
+
   useEffect(() => {
-
-    const query = new URLSearchParams(location.search);
-    const instanceId = query.get('id');
-
     if (instanceId != undefined) {
       request({
         method: "get",
@@ -91,7 +90,7 @@ export default function ApproveExample() {
     };
 
 
-  }, []);
+  }, [instanceId]);
 
 
 

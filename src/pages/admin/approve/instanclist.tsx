@@ -68,27 +68,46 @@ const schema = {
                 "label": "审批状态",
                 "type": "mapping",
                 "map": {
-                    0: "<span >未参与审批</span>",
+                    0: "<span >未执行审批</span>",
                     1: "<span >审批通过</span>",
                     2: "<span >审批驳回</span>",
                     3: "<span >审批中</span>",
                 }
             },
             {
-                "name": "status",
                 "label": "工作流状态",
-                "type": "status",
-                "source": {
-                    0: {
-                        "label": "运行中",
-                        "icon": "rolling"
+                "type": "container",
+                "body": [
+                    {
+                        "name": "status",
+                        "label": "工作流状态",
+                        "type": "status",
+                        "source": {
+                            0: {
+                                "label": "运行中",
+                                "icon": "rolling"
+                            },
+                            1: {
+                                "label": "执行完成",
+                                "icon": "success"
+                            },
+                            2: {
+                                "label": "异常截断",
+                                "icon": "fail"
+                            }
+                        },
                     },
-                    1: {
-                        "label": "执行完成",
-                        "icon": "success"
+                    {
+                        "name": "reason",
+                        "type": "remark",
+                        "content": "${reason}",
+                        "visibleOn": "${status == 2}",
+                        "icon": "fa fa-exclamation-triangle",
                     }
-                },
+                ]
+
             },
+
             {
                 "name": "updateAt",
                 "label": "最后更新时间"
@@ -122,35 +141,44 @@ const schema = {
                                         "items": [
                                             {
                                                 "time": "2019-02-07",
-                                                "title": "数据开发",
-                                                "detail": "2019-02-07detail",
-                                                "color": "#ffb200",
-                                                "icon": "close"
+                                                "title": [
+                                                    {
+                                                        "type": "property",
+                                                        "title": "机器配置",
+                                                        "items": [
+                                                            {
+                                                                "label": "cpu",
+                                                                "content": "1 core"
+                                                            },
+                                                            {
+                                                                "label": "memory",
+                                                                "content": "4G"
+                                                            },
+                                                            {
+                                                                "label": "disk",
+                                                                "content": "80G"
+                                                            },
+                                                            {
+                                                                "label": "network",
+                                                                "content": "4M",
+                                                                "span": 2
+                                                            },
+                                                            {
+                                                                "label": "IDC",
+                                                                "content": "beijing"
+                                                            },
+                                                            {
+                                                                "label": "Note",
+                                                                "content": "其它说明其它说明其它说明其它说明其它说明其它说明其它说明vvvv其它说明其它说明其它说明vv",
+                                                                "span": 3
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
                                             },
-                                            { "time": "2019-02-08", "title": "管理中心", "detail": "2019-02-08detail" },
-                                            {
-                                                "time": "2019-02-09",
-                                                "title": "SQL语句",
-                                                "detail": "2019-02-09detail",
-                                                "color": "warning"
-                                            },
-                                            {
-                                                "time": "2019-02-10",
-                                                "title": "一键部署",
-                                                "detail": "2019-02-10detail",
-                                                "icon": "compress-alt"
-                                            },
-                                            { "time": "2019-02-10", "title": "一键部署", "detail": "2019-02-11detail" },
-                                            {
-                                                "time": "2019-02-10",
-                                                "title": "一键部署",
-                                                "detail": "2019-02-12detail",
-                                                "icon": "close"
-                                            },
-                                            { "time": "2019-02-10", "title": "一键部署", "detail": "2019-02-13detail" }
-
                                         ]
-                                    }]
+                                    }
+                                ]
                             }
                         }
                     }
