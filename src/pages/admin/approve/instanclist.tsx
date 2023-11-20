@@ -1,4 +1,11 @@
 import schema2component from "../../../utils/schema2component";
+import "./index.css";
+import "./show.js";
+
+
+
+
+
 
 
 const schema = {
@@ -132,51 +139,20 @@ const schema = {
                                 "type": "page",
                                 "body": [
                                     {
-                                        "type": "iframe",
-                                        "src": "/flow/show?id=${id}",
-                                        "height": 450
+                                        "type": "approveExample"
                                     },
                                     {
                                         "type": "timeline",
-                                        "items": [
-                                            {
-                                                "time": "2019-02-07",
-                                                "title": [
-                                                    {
-                                                        "type": "property",
-                                                        "title": "机器配置",
-                                                        "items": [
-                                                            {
-                                                                "label": "cpu",
-                                                                "content": "1 core"
-                                                            },
-                                                            {
-                                                                "label": "memory",
-                                                                "content": "4G"
-                                                            },
-                                                            {
-                                                                "label": "disk",
-                                                                "content": "80G"
-                                                            },
-                                                            {
-                                                                "label": "network",
-                                                                "content": "4M",
-                                                                "span": 2
-                                                            },
-                                                            {
-                                                                "label": "IDC",
-                                                                "content": "beijing"
-                                                            },
-                                                            {
-                                                                "label": "Note",
-                                                                "content": "其它说明其它说明其它说明其它说明其它说明其它说明其它说明vvvv其它说明其它说明其它说明vv",
-                                                                "span": 3
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                        ]
+                                        "source": {
+                                            "method": "get",
+                                            "url": "http://localhost:8080/v1/sys/recode/instance/${id}",
+                                            "responseData": {
+                                                "items": "${items|pick:time~time,title~customNodeName,detail~payload}"
+                                            }
+                                        },
+                                    },
+                                    {
+                                        "type": "approveShow",
                                     }
                                 ]
                             }
