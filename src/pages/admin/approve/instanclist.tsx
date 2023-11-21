@@ -1,12 +1,6 @@
 import schema2component from "../../../utils/schema2component";
-import "./index.css";
-import "./show.js";
-
-
-
-
-
-
+import "./components/approvalShow"
+import "./components/timeline"
 
 const schema = {
     "type": "page",
@@ -139,7 +133,15 @@ const schema = {
                                 "type": "page",
                                 "body": [
                                     {
-                                        "type": "approveExample"
+                                        "type": "approveShow",
+                                    },
+                                    {
+                                        "type": "antd-timeline",
+                                        "marginTop": 40,
+                                        "instanceId": "${id}",
+                                        "body": {
+                                            "hha": "haha"
+                                        }
                                     },
                                     {
                                         "type": "timeline",
@@ -151,9 +153,6 @@ const schema = {
                                             }
                                         },
                                     },
-                                    {
-                                        "type": "approveShow",
-                                    }
                                 ]
                             }
                         }
