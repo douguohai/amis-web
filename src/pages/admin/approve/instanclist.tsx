@@ -139,19 +139,6 @@ const schema = {
                                         "type": "antd-timeline",
                                         "marginTop": 40,
                                         "instanceId": "${id}",
-                                        "body": {
-                                            "hha": "haha"
-                                        }
-                                    },
-                                    {
-                                        "type": "timeline",
-                                        "source": {
-                                            "method": "get",
-                                            "url": "http://localhost:8080/v1/sys/recode/instance/${id}",
-                                            "responseData": {
-                                                "items": "${items|pick:time~time,title~customNodeName,detail~payload}"
-                                            }
-                                        },
                                     },
                                 ]
                             }
