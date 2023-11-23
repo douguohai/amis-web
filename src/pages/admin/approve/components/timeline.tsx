@@ -1,12 +1,15 @@
 import React, { ReactNode } from 'react';
 import { RendererProps, Renderer } from 'amis';
-import { Timeline, Descriptions, message, List, Image } from 'antd';
-import type { DescriptionsProps, TimelineItemProps } from 'antd';
+import { Timeline, Descriptions, message, Watermark } from 'antd';
+import type { TimelineItemProps } from 'antd';
 import { request } from '@/utils/requestInterceptor';
 import { code } from "../config"
 
 class TimelineStateType {
     items: TimelineItemProps[]
+    approvalStatus: number
+    status: number
+    reason: string
 }
 
 interface Props extends RendererProps {
@@ -26,6 +29,9 @@ class AntdTimeline extends React.Component<Props, TimelineStateType> {
         super(props);
         this.state = {
             items: [],
+            approvalStatus: 0,
+            status: 0,
+            reason: ""
         };
     }
 
@@ -136,8 +142,9 @@ class AntdTimeline extends React.Component<Props, TimelineStateType> {
                             elements.push({
                                 key: item.nodeId,
                                 children: [<Descriptions title={item.time + "-" + item.customNodeName} key={item.time + "-" + item.customNodeName}>
-                                    <Descriptions.Item label="节点类型">单行网关</Descriptions.Item>
-                                    <Descriptions.Item label="参与计算表达式">1810000000</Descriptions.Item>
+                                    <Descriptions.Item label="节点类型" span={1}>单行网关</Descriptions.Item>
+                                    <Descriptions.Item label="运行状态" span={2}>{0 == item.status ? "执行中" : "执行完"}</Descriptions.Item>
+                                    <Descriptions.Item label="参与计算表达式" span={3}>{item.conditions}</Descriptions.Item>
                                 </Descriptions>]
                             })
                             break;
@@ -168,7 +175,12 @@ class AntdTimeline extends React.Component<Props, TimelineStateType> {
 
 
                 }
-                this.setState({ items: elements })
+                this.setState({
+                    items: elements,
+                    approvalStatus: payload.approvalStatus,
+                    status: payload.status,
+                    reason: payload.reason
+                })
             }
         }).catch((error) => {
             console.log("error:", error);
@@ -183,16 +195,39 @@ class AntdTimeline extends React.Component<Props, TimelineStateType> {
 
     render() {
         const { marginTop } = this.props;
+
+        let approvalStatus = "未知";
+        if (1 == this.state.approvalStatus) {
+            approvalStatus = "审批通过"
+        } else if (2 == this.state.approvalStatus) {
+            approvalStatus = "审批驳回"
+        } else if (3 == this.state.approvalStatus) {
+            approvalStatus = "审批中"
+        }
+
+
+        let status = "运行中";
+        if (1 == this.state.status) {
+            status = "已结束"
+        } else if (2 == this.state.status) {
+            approvalStatus = this.state.reason
+            status = "异常截断"
+        }
+
+        let color = "green";
+        if (1 == this.state.status) {
+            color = ""
+        } else if (2 == this.state.status) {
+            color = "red"
+        }
+
         return (<div style={{ marginTop: marginTop }}>
-            <Timeline
-                mode={'left'}
-                items={this.state.items}
-            />
-            <Image
-                width={100}
-                preview={false}
-                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-            />
+            <Watermark content={[status, approvalStatus]} gap={[150, 250]} font={{ color: color }}>
+                <Timeline
+                    mode={'left'}
+                    items={this.state.items}
+                />
+            </Watermark>
         </div>);
     }
 }
