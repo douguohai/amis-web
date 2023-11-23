@@ -8,6 +8,7 @@ import { observer } from 'mobx-react';
 import { IMainStore } from '../stores';
 import Login from '../pages/admin/common/Login';
 import AdminRoute from '../pages/admin';
+import ShowFlow from '../pages/admin/approve/showflow';
 
 import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
@@ -24,6 +25,7 @@ export default observer(function ({ store }: {
                 <AlertComponent key="alert" theme={store.theme} />
                 <Switch>
                     <Route path={`/login`} component={Login} />
+                    <Route path={`/showflow`} component={ShowFlow} />
                     <Route path={''} component={AdminRoute} />
                 </Switch>
 

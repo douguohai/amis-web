@@ -595,7 +595,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
                             <Form.Item name={[field.name, 'inputValue']} rules={[{ required: true, message: '请输入比较值' }, { pattern: /(^\S)((.)*\S)?(\S*$)/, message: '前后不能有空格' }]}>
                               <Input style={{ width: 140 }} placeholder="比较值" />
                             </Form.Item>
-                            <Form.Item >
+                            <Form.Item hidden={formDisabled} >
                               <MinusCircleOutlined
                                 onClick={() => {
                                   remove(field.name);

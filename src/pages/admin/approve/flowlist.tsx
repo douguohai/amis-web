@@ -262,10 +262,23 @@ const schema = {
                                                 {
                                                     "label": "流程预览",
                                                     "type": "button",
-                                                    "actionType": "ajax",
                                                     "level": "link",
-                                                    "confirmText": "确认要删除？",
-                                                    "api": "delete:/amis/api/mock2/sample/${id}"
+                                                    "onEvent": {
+                                                        "click": {
+                                                            "actions": [
+                                                                {
+                                                                    "actionType": "url",
+                                                                    "args": {
+                                                                        "url": "/showflow?id=${id}",
+                                                                        "blank": true,
+                                                                        "params": {
+                                                                            "id": "${id}"
+                                                                        },
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
                                                 }
                                             ]
                                         }
