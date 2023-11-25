@@ -101,6 +101,8 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
   }, [nodeData])
 
 
+
+
   const getApproveList = () => {
 
     const approveSelect =
@@ -132,7 +134,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
           <span className="ant-form-text">{nodeData.properties.type}(审批节点)</span>
         </Form.Item>
         <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
-          <Input placeholder="业务名称"
+          <Input placeholder="业务名称" maxLength={15}
             value={nodeData.properties.customNodeName}
           />
         </Form.Item>
@@ -356,7 +358,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
           <span className="ant-form-text">{nodeData.properties.nextType}</span>
         </Form.Item>
         <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
-          <Input placeholder="业务名称"
+          <Input placeholder="业务名称" maxLength={15}
             value={nodeData.properties.customNodeName}
           />
         </Form.Item>
@@ -406,7 +408,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
             <span className="ant-form-text">{nodeData.id}</span>
           </Form.Item>
           <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
-            <Input placeholder="业务名称"
+            <Input placeholder="业务名称" maxLength={15}
               value={nodeData.properties.customNodeName}
             />
           </Form.Item>
@@ -435,7 +437,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
             <span className="ant-form-text">{nodeData.id}</span>
           </Form.Item>
           <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
-            <Input placeholder="业务名称"
+            <Input placeholder="业务名称" maxLength={15}
               value={nodeData.properties.customNodeName}
             />
           </Form.Item>
@@ -473,7 +475,7 @@ export default function PropertyPanel({ nodeData, updateProperty, onClose, open,
         <span className="ant-form-text">{nodeData.properties.type}</span>
       </Form.Item>
       <Form.Item name="customNodeName" label="业务名称" rules={[{ required: true, message: '请输入自定义业务名称' }]}>
-        <Input placeholder="业务名称"
+        <Input placeholder="业务名称" maxLength={15}
           value={nodeData.properties.customNodeName}
         />
       </Form.Item>

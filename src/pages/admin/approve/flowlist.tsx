@@ -53,20 +53,21 @@ const schema = {
         "name": "crud",
         "syncLocation": false,
         "api": "http://localhost:8080/v1/sys/flow/list",
+        "interval": 30000,
         "filter": {
-            "debug": true,
+            "debug": false,
             "title": "条件搜索",
             "body": [
                 {
                     "type": "group",
                     "body": [
                         {
-                            "type": "input-text",
-                            "name": "app",
+                            "type": "select",
+                            "name": "appId",
                             "label": "应用名称",
                             "clearable": true,
-                            "placeholder": "通应用名称搜索",
-                            "size": "sm"
+                            "size": "sm",
+                            "source": "http://localhost:8080/v1/sys/option/select/1" // get 请求
                         },
                         {
                             "type": "input-text",
@@ -220,10 +221,7 @@ const schema = {
                                     "syncLocation": false,
                                     "api": "http://localhost:8080/v1/sys/flow/details/${id}",
                                     "columns": [
-                                        {
-                                            "name": "id",
-                                            "label": "编号"
-                                        },
+
                                         {
                                             "name": "version",
                                             "label": "版本号"
@@ -281,7 +279,7 @@ const schema = {
                                                     }
                                                 }
                                             ]
-                                        }
+                                        },
                                     ]
                                 }]
                             }

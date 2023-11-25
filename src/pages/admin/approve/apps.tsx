@@ -29,6 +29,7 @@ const schema = {
             "type": "crud",
             "syncLocation": false,
             "api": "http://localhost:8080/v1/sys/app/list",
+            "interval": 30000,
             "columns": [
                 {
                     "name": "id",
@@ -40,7 +41,7 @@ const schema = {
                 },
                 {
                     "name": "key",
-                    "label": "密钥"
+                    "label": "密钥",
                 },
                 {
                     "name": "noticeUrl",

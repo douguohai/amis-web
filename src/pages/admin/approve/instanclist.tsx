@@ -9,25 +9,34 @@ const schema = {
         "name": "crud",
         "syncLocation": false,
         "api": "get:http://localhost:8080/v1/sys/instance/list",
+        "interval": 30000,
         "filter": {
-            "debug": true,
+            "debug": false,
             "title": "条件搜索",
             "body": [
                 {
                     "type": "group",
                     "body": [
                         {
-                            "type": "input-text",
-                            "name": "app",
                             "label": "应用名称",
+                            "type": "select",
+                            "name": "appId",
+                            "source": "http://localhost:8080/v1/sys/option/select/1", // get 请求
                             "clearable": true,
-                            "placeholder": "通应用名称搜索",
                             "size": "sm"
                         },
                         {
-                            "type": "input-text",
-                            "name": "name",
                             "label": "业务名称",
+                            "type": "select",
+                            "name": "flowId",
+                            "size": "sm",
+                            "source": "http://localhost:8080/v1/sys/option/select/2?appId=${appId}",
+                            "clearable": true,
+                        },
+                        {
+                            "type": "input-text",
+                            "name": "instanceId",
+                            "label": "实例编号",
                             "clearable": true,
                             "size": "sm"
                         }
@@ -57,7 +66,7 @@ const schema = {
                 "copyable": true
             },
             {
-                "name": "flowDetailId",
+                "name": "flowName",
                 "label": "业务名称"
             },
             {
@@ -110,7 +119,7 @@ const schema = {
             },
 
             {
-                "name": "updateAt",
+                "name": "updateTime",
                 "label": "最后更新时间"
             },
             {
